@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: cwru_davinci_dual_manipulation_ik_control
+Description: Description of cwru_davinci_dual_manipulation_ik_control
+Version: 0.0.0
+Cflags: 
+Libs: -L/usr/local/lib 
+Requires: 

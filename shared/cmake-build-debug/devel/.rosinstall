@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/sulu/ros_ws/src/cwru_davinci_dualmanipulation/shared/cmake-build-debug/devel/setup.sh
