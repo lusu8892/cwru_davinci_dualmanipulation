@@ -131,18 +131,28 @@
       <file leaf-file-name="davinci_generic_planning_capability.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/cwru_davinci_dualmanipulation_ik_control/davinci_generic_planning_capability.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1383">
-              <caret line="91" column="88" lean-forward="false" selection-start-line="91" selection-start-column="88" selection-end-line="91" selection-end-column="88" />
+            <state relative-caret-position="609">
+              <caret line="87" column="13" lean-forward="false" selection-start-line="87" selection-start-column="6" selection-end-line="87" selection-end-column="38" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="davinci_abstract_capability.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="davinci_random_planning_capability.h" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/include/cwru_davinci_dualmanipulation_ik_control/davinci_random_planning_capability.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="681">
+              <caret line="71" column="2" lean-forward="false" selection-start-line="71" selection-start-column="2" selection-end-line="71" selection-end-column="2" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="davinci_abstract_capability.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/cwru_davinci_dualmanipulation_ik_control/davinci_abstract_capability.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="36" selection-end-column="3" />
+            <state relative-caret-position="465">
+              <caret line="46" column="31" lean-forward="false" selection-start-line="46" selection-start-column="6" selection-end-line="46" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -165,6 +175,7 @@
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/include/cwru_davinci_dualmanipulation_ik_control/davinci_abstract_capability.h" />
         <option value="$PROJECT_DIR$/include/cwru_davinci_dualmanipulation_ik_control/davinci_generic_planning_capability.h" />
+        <option value="$PROJECT_DIR$/include/cwru_davinci_dualmanipulation_ik_control/davinci_random_planning_capability.h" />
       </list>
     </option>
   </component>
@@ -175,10 +186,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="65" />
+    <option name="x" value="1985" />
     <option name="y" value="-4" />
-    <option name="width" value="1855" />
-    <option name="height" value="1204" />
+    <option name="width" value="2495" />
+    <option name="height" value="1444" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -612,15 +623,15 @@
       <option name="presentableId" value="Default" />
       <updated>1533844095823</updated>
       <workItem from="1533844097110" duration="775000" />
-      <workItem from="1533846648526" duration="4029000" />
+      <workItem from="1533846648526" duration="6521000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4804000" />
+    <option name="totallyTimeSpent" value="7296000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-4" width="2495" height="1444" extended-state="6" />
+    <frame x="1985" y="-4" width="2495" height="1444" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2496994" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -695,16 +706,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/include/cwru_davinci_dualmanipulation_ik_control/davinci_generic_planning_capability.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1383">
-          <caret line="91" column="88" lean-forward="false" selection-start-line="91" selection-start-column="88" selection-end-line="91" selection-end-column="88" />
+        <state relative-caret-position="609">
+          <caret line="87" column="13" lean-forward="false" selection-start-line="87" selection-start-column="6" selection-end-line="87" selection-end-column="38" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/include/cwru_davinci_dualmanipulation_ik_control/davinci_abstract_capability.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="36" selection-end-column="3" />
+        <state relative-caret-position="465">
+          <caret line="46" column="31" lean-forward="false" selection-start-line="46" selection-start-column="6" selection-end-line="46" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/cwru_davinci_dualmanipulation_ik_control/davinci_random_planning_capability.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="681">
+          <caret line="71" column="2" lean-forward="false" selection-start-line="71" selection-start-column="2" selection-end-line="71" selection-end-column="2" />
           <folding />
         </state>
       </provider>

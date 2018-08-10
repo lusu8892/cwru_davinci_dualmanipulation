@@ -37,61 +37,40 @@
  * that will be specialized later on
  */
 
-#ifndef CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_GENERIC_PLANNING_CAPABILITY_H
-#define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_GENERIC_PLANNING_CAPABILITY_H
+#ifndef CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_RANDOM_PLANNING_CAPABILITY_H
+#define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_RANDOM_PLANNING_CAPABILITY_H
 
-#include <cwru_davinci_dual_manipulation_ik_control/davinci_abstract_capability.h>
+#include <cwru_davinci_dual_manipulation_ik_control/davinci_generic_planning_capability.h>
+#include <atomic>
+#include <moveit/robot_model_loader/robot_model_loader.h>
 
 namespace cwru_davinci_dual_manipulation
 {
 namespace cwru_davinci_ik_control
 {
 
-enum class IKTargetType
+class DavinciRandomPlanningCapability : public DavinciGenericPlanningCapability
 {
-  POSE_TARGET,
-  JOINT_TARGET,
-  NAMED_TARGET
+public:
+  DavinciRandomPlanningCapability(shared_ik_memory& sikm_, const ros::NodeHandle& node_ = ros::NodeHandle());
+  virtual ~DavinciRandomPlanningCapability();
+  virtual bool isComplete();
+  virtual void performRequest(dual_manipulation_shared::ik_serviceRequest req);
+  virtual bool getResults(dual_manipulation_shared::ik_response& res);
+  virtual bool canRun();
+  virtual bool canPerformCapability(const ik_control_capabilities& ik_capability) const;
+  virtual void reset();
+
+  /**
+   * @brief add a target to the internal targets list
+   *
+   * @param req the same req from the @e ik_service
+   */
+  void add_target(const dual_manipulation_shared::ik_service::Request& req);
+
+private:
+  
 };
-
-struct IKTarget
-{
-  IKTarget(){};
-  IKTarget(std::vector<geometry_msgs::Pose> ee_poses, std::string ee_name)
-    :ee_poses(ee_poses),ee_name(ee_name),type(IKTargetType::POSE_TARGET)
-  {};
-
-  IKTarget(geometry_msgs::Pose ee_pose,std::string ee_name)
-    :ee_poses({ee_pose}),ee_name(ee_name),type(IKTargetType::POSE_TARGET)
-  {};
-
-  IKTarget(std::string target_name,std::string ee_name)
-    :target_name(target_name),ee_name(ee_name),type(IKTargetType::NAMED_TARGET)
-  {};
-
-  IKTarget(std::vector<std::vector<double>> joints,std::string ee_name)
-    :joints(joints),ee_name(ee_name),type(IKTargetType::JOINT_TARGET)
-  {};
-
-  IKTarget(std::vector<double> joint,std::string ee_name):
-    joints({joint}),ee_name(ee_name),type(IKTargetType::JOINT_TARGET)
-  {};
-
-
-  std::vector<geometry_msgs::Pose> ee_poses;
-  std::string ee_name;
-  std::vector<std::vector<double>> joints;
-  std::string target_name;
-  IKTargetType type;
-};
-
-class DavinciGenericPlanningCapability : public DavinciAbstractCapability
-{
-
-};
-
 }
-
 }
-
-#endif //CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_GENERIC_PLANNING_CAPABILITY_H
+#endif //CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_RANDOM_PLANNING_CAPABILITY_H
