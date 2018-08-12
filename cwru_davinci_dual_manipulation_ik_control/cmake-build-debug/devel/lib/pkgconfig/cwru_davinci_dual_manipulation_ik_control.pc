@@ -1,8 +1,0 @@
-prefix=/home/sulu/ros_ws/src/cwru_davinci_dualmanipulation/cwru_davinci_dual_manipulation_ik_control/cmake-build-debug/devel
-
-Name: cwru_davinci_dual_manipulation_ik_control
-Description: Description of cwru_davinci_dual_manipulation_ik_control
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/sulu/ros_ws/src/cwru_davinci_dualmanipulation/cwru_davinci_dual_manipulation_ik_control/cmake-build-debug/devel/lib 
-Requires: 

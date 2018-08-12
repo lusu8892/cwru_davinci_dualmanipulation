@@ -69,7 +69,76 @@ public:
   void add_target(const dual_manipulation_shared::ik_service::Request& req);
 
 private:
-  
+  shared_ik_memory& sikm;
+  const DavinciIKControlCapability davinciIKControlCapability;
+
+  std::mutex map_mutex_;
+  std::mutex robotState_mutex_;
+
+  // keep an history of the required targets
+  std::map<std::string, cwru_davinci_dual_manipulation::cwru_davinci_ik_control::IKTarget> targets_;
+
+  // MoveIt! variables
+  moveit::core::RobotModelPtr robot_model_;
+  moveit::core::RobotStatePtr target_rs_;
+  robot_model_loader::RobotModelLoaderPtr robot_model_loader_;
+  planning_pipline::PlannigPipeLinePtr pipeline_;
+  planning_interface::MotionPlanRequest MotionPlanReq_;
+
+  // ros variables
+  ros::NodeHandle nh_;
+
+  // planner parameters
+  std::string planner_id_;
+  double planning_time_;
+  std::string backup_planner_id_;
+  double backup_planning_time_;
+  int max_planning_attempts_;
+  int backup_max_planning_attempts_;
+  double goal_position_tolerance_;
+  double goal_orientation_tolerance_;
+  double goal_joint_tolerance_;
+  std::vector<double> ws_bounds_;
+
+  // interface and results variables
+  std::atomic_bool busy;
+  shared::ik_response plan_response;
+
+private:
+
+  /**
+   * @brief update a motionPlan request with a new target, considering the type of plan that will follow
+   * @param req
+   * @param targets
+   * @param plan_type
+   * @return
+   */
+  bool buildMotionPlanRequest(moveit_msgs::MotionPlanRequest& req,
+                              const std::map< std::string, cwru_davinci_dual_manipulation::cwru_davinci_ik_control::IKTarget >& targets,
+                              IKControlCapabilities plan_type);
+
+  /**
+   * @brief utility function to parse parameters from the parameter server
+   * @param params all useful params got from the parameter server
+   * @return void
+   */
+  void parseParameters(XmlRpc::XmlRpcValue& params);
+
+  /**
+   * @brief utility function to set class variables which depend on parameters
+   * @return void
+   */
+  bool setParameterDependentVariables();
+
+  /**
+   * @brief set the target robot state of the eef @param ee_name to the target specified in the SRDF
+   *        with name @param named_target
+   * @param ee_name the end-effector we want to set a target for
+   * @param named_target the target name as specified in the SRDF
+   * @return
+   */
+  bool setTarget(std::string ee_name, std::string named_target);
+
 };
 }
 }

@@ -7,3 +7,15 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
+cwru_davinci_dualmanipulation.config
+cwru_davinci_dualmanipulation.creator
+cwru_davinci_dualmanipulation.creator.user
+cwru_davinci_dualmanipulation.files
+cwru_davinci_dualmanipulation.includes
+cmake-build-debug
+.idea
+.config
+.creator
+.user
+.files
+.includes
