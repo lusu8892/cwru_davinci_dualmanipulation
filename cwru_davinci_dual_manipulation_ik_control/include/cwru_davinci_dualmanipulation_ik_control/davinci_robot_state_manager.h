@@ -53,12 +53,12 @@ class DavinciRobotStateManager
    * @brief Initialize a robot state manager
    *
    * @param robot_model A robot model to construct the state monitor
-   * @param joint_states The topic to use for listening to joint states
+   * @param joint_states_topic The topic to use for listening to joint states
    * @param full_robot_group The SRDF group name of the full robot
    * @return
    */
   DavinciRobotStateManager(const moveit::core::RobotModelConstPtr &robot_model,
-                           const std::string &joint_states,
+                           const std::string &joint_states_topic,
                            const std::string &full_robot_group);
 
   ~DavinciRobotStateManager() {}

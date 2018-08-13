@@ -45,13 +45,13 @@
 #define CLASS_NAMESPACE "DavinciRobotStateManager::"
 
 DavinciRobotStateManager::DavinciRobotStateManager(const moveit::core::RobotModelConstPtr &robot_model,
-                                                   const std::string &joint_states,
+                                                   const std::string &joint_states_topic,
                                                    const std::string &full_robot_group)
   : full_robot_name_(full_robot_group)
 {
   const boost::shared_ptr<tf::Transformer> tf(new tf::Transformer());
   current_robot_monitor_.reset(new planning_scene_monitor::CurrentStateMonitor(robot_model,tf));
-  current_robot_monitor_->startStateMonitor(joint_states);
+  current_robot_monitor_->startStateMonitor(joint_states_topic);
   updateCurrentState(full_robot_name_);
 }
 
