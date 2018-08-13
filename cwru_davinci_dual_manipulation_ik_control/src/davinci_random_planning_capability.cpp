@@ -40,5 +40,51 @@
 
 #include <cwru_davinci_dual_manipulation_ik_control/random_planning_capability.h>
 
+
+#include <moveit/kinematic_constraints/utils.h>
 #include <moveit/move_group_interface/move_group.h>
 #include <moveit/robot_state/conversions.h>
+
+#define CLASS_NAMESPACE "ikControl::randomPlanningCapability::"
+#define CLASS_LOGNAME "ikControl::randomPlanningCapability"
+#define DEFAULT_MAX_PLANNING_ATTEMPTS 1
+#define HIGH_UNGRASP_WP_IF_COLLIDING 0.1
+#define MAX_REPLAN 10
+#define TABLE_WP_HEIGHT 0.1
+#define ALLOWED_JOINT_JUMP 0.5 // allow at most ALLOWED_JOINT_JUMP rads jump per joint between two successive points in a trajectory
+
+#define REFACTORED_OUT 1
+
+using namespace cwru_davinci_dual_manipulation::cwru_davinci_ik_control;
+
+DavinciRandomPlanningCapability::DavinciRandomPlanningCapability(shared_ik_memory &sikm, const ros::NodeHandle &nh)
+  : sikm_(sikm), nh_(nh)
+{
+  reset();
+}
+
+DavinciRandomPlanningCapability::~DavinciRandomPlanningCapability()
+{
+
+}
+
+bool DavinciRandomPlanningCapability::canPerformCapability(const IKControlCapabilities& ik_capability) const
+{
+  if( (ik_capability == IKControlCapabilities::PLAN)              ||
+      (ik_capability == IKControlCapabilities::PLAN_NO_COLLISION) ||
+      (ik_capability == IKControlCapabilities::PLAN_BEST_EFFORT)  ||
+      (ik_capability == IKControlCapabilities::PLAN_CLOSE_BEST_EFFORT) )
+    return true;
+
+  return false;
+}
+
+void DavinciRandomPlanningCapability::reset()
+{
+  std::unique_lock<std::mutex> ul(sikm.m);
+  parseParameters(*(sikm.ik_control_parames));
+
+  setParameterDependentVariables();
+
+  busy.store(false);
+}

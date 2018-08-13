@@ -33,33 +33,11 @@
  *********************************************************************/
 
 /* Author: Su Lu <sxl924@case.edu>
- * Description: An abstract class implementing a generic capability for use inside cwru_davinci_ik_control: plan, move, grasp, ...
+ * Description: Here define stuff which is needed from various possible planning capabilities,
+ * that will be specialized later on
  */
 
-#ifndef CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_ABSTRACT_CAPABILITY_H
-#define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_ABSTRACT_CAPABILITY_H
+#ifndef CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_GROUP_STRUCTURE_MANAGER_H
+#define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_GROUP_STRUCTURE_MANAGER_H
 
-#include <cwru_davinci_dual_manipulation_shared/davinci_ik_control_capabilities.h>
-
-namespace cwru_davinci_dual_manipulation
-{
-namespace cwru_davinci_ik_control
-{
-class DavinciAbstractCapability
-{
-public:
-  DavinciAbstractCapability(){}
-  virtual ~DavinciAbstractCapability(){}
-  virtual bool isComplete() = 0;
-  virtual void performRequest(dual_manipulation_shared::ik_serviceRequest req) = 0;
-  virtual bool getResults(dual_manipulation_shared::ik_response& res) = 0;
-  virtual bool canRun() = 0;
-  /// could be associated with a type coming from ik_control_capabilities.h
-  virtual bool canPerformCapability(const IKControlCapabilities& ik_capability) const = 0;
-  virtual void reset(){}
-};
-
-}
-}
-
-#endif // CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_ABSTRACT_CAPABILITY_H
+#endif //CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_GROUP_STRUCTURE_MANAGER_H

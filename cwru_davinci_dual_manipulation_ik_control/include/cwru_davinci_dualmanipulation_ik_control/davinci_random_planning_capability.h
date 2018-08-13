@@ -52,13 +52,13 @@ namespace cwru_davinci_ik_control
 class DavinciRandomPlanningCapability : public DavinciGenericPlanningCapability
 {
 public:
-  DavinciRandomPlanningCapability(shared_ik_memory& sikm_, const ros::NodeHandle& node_ = ros::NodeHandle());
+  DavinciRandomPlanningCapability(shared_ik_memory& sikm, const ros::NodeHandle& nh = ros::NodeHandle());
   virtual ~DavinciRandomPlanningCapability();
   virtual bool isComplete();
   virtual void performRequest(dual_manipulation_shared::ik_serviceRequest req);
   virtual bool getResults(dual_manipulation_shared::ik_response& res);
   virtual bool canRun();
-  virtual bool canPerformCapability(const ik_control_capabilities& ik_capability) const;
+  virtual bool canPerformCapability(const IKControlCapabilities& ik_capability) const;
   virtual void reset();
 
   /**
@@ -69,7 +69,7 @@ public:
   void add_target(const dual_manipulation_shared::ik_service::Request& req);
 
 private:
-  shared_ik_memory& sikm;
+  shared_ik_memory& sikm_;
   const DavinciIKControlCapability davinciIKControlCapability;
 
   std::mutex map_mutex_;
