@@ -72,14 +72,16 @@ void DavinciGroupStructureManager::parseParameters(XmlRpc::XmlRpcValue& params)
 
     for(auto tree:tree_names_list_)
     {
-      parseSingleParameter(params["tree_composition"],tree_composition_tmp[tree], tree);
+      cwru_davinci_dual_manipulation::shared::parseSingleParameter (params["tree_composition"],
+                                                                    tree_composition_tmp[tree],
+                                                                    tree);
       if(tree_composition_tmp.at(tree).empty())
       {
         tree_composition_tmp.erase(tree);
       }
       else
       {
-        for(auto chain:tree_composition_tmp(tree))
+        for(auto chain:tree_composition_tmp.at(tree))
         {
           if(std::find(chain_names_list_.begin(),chain_names_list_.end(),chain) == chain_names_list_.end())
           {
@@ -100,22 +102,22 @@ void DavinciGroupStructureManager::parseParameters(XmlRpc::XmlRpcValue& params)
   }
 
   std::vector <std::string> tree_names_tmp;
-    tree_names_tmp.swap(tree_names_list_);
+  tree_names_tmp.swap(tree_names_list_);
 
-    for(auto tree:tree_names_tmp)
+  for(auto tree:tree_names_tmp)
+  {
+    if(!tree_composition_.count(tree) || tree_composition_.at(tree).size() == 0)
     {
-      if(!tree_composition_.count(tree) || tree_composition_.at(tree).size() == 0)
-      {
-        std::cout << RED_INTENSE << CLASS_NAMESPACE << __func__
-                  << " : No composition is specified for tree '"
-                  << tree << "': check the yaml configuration."
-                  << NO_COLOR << std::endl;
+      std::cout << RED_INTENSE << CLASS_NAMESPACE << __func__
+                << " : No composition is specified for tree '"
+                << tree << "': check the yaml configuration."
+                << NO_COLOR << std::endl;
 
-        correct = false;
-      }
-      else
-        tree_names_list_.push_back(tree);
+      correct = false;
     }
+    else
+      tree_names_list_.push_back(tree);
+  }
 
   std::map <std::string, std::string> map_tmp, map_tmp_tree;
   cwru_davinci_dual_manipulation::shared::parseSingleParameter(params, map_tmp, "group_map", chain_names_list_);
@@ -166,4 +168,79 @@ const std::map< std::string, std::string >& DavinciGroupStructureManager::getGro
 const std::vector< std::string >& DavinciGroupStructureManager::getChains() const
 {
   return chain_names_list_;
+}
+
+bool DavinciGroupStructureManager::isChain(const std::string& group) const
+{
+  return std::find(chain_names_list_.begin(), chain_names_list_.begin(), group) != chain_names_list_.end();
+}
+
+bool DavinciGroupStructureManager::isTree(const std::string& group) const
+{
+  return std::find(tree_names_list_.begin(),tree_names_list_.end(),group) != tree_names_list_.end();
+}
+
+const std::vector<std::string>& DavinciGroupStructureManager::getTreeComposition(const std::string& group) const
+{
+  if(!isTree(group))
+    return empty_vector;
+
+  return tree_composition_.at(group);
+}
+
+std::vector<std::string> DavinciGroupStructureManager::getTreeWithChain(const std::string& group) const
+{
+  std::vector<std::string> res;
+  if(!isChain(group))
+    return res;
+
+  for(auto tree:tree_name_list_)
+  {
+    if(std::find(tree_composition_.at(tree).begin(), tree_composition_.at(tree).end(), group) != tree_composition_.at(tree).end())
+      res.push_back (tree);
+  }
+  return res;
+}
+
+std::string DavinciGroupStructureManager::findGroupName(const std::vector<std::string>& ee_list) const
+{
+  std::string best_group("full_robot");
+  std::vector<std::string> ee_list_local;
+  uint best_size = -1;
+
+  for(auto& ee:ee_list)
+  {
+    if(is_tree(ee))
+    {
+      for(auto& c:tree_compostion_.at(ee))
+      {
+        ee_list_local.push_back(c);
+      }
+    }
+    else if(isChain(ee))
+      ee_list_local.push_back(ee);
+  }
+
+  for(auto& t:tree_composition_)
+  {
+    boo found = true;
+    for(auto& ee:ee_list_local)
+    {
+      found = (std::find(t.second.begin(),t.second.end(),ee) != t.second.end());
+      if(!found)
+        break;
+    }
+    if(!found)
+      continue;
+
+    if (t.second.size() < best_size)
+    {
+      best_size = t.second.size();
+      best_group = t.first;
+      if(best_size == ee_list_local.size())
+        break;
+    }
+  }
+
+  return best_group;
 }
