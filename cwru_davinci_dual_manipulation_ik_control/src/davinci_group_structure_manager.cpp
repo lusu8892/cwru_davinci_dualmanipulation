@@ -40,7 +40,7 @@
  * It also provides some useful functionalities to find the right group to use in some circumstances.
  */
 
-#include <cwru_davinci_dualmanipulation_ik_control/group_structure_manager.h>
+#include <cwru_davinci_dualmanipulation_ik_control/davinci_group_structure_manager.h>
 #include <cwru_davinci_dualmanipulation_shared/parsing_utils.h>
 #include <assert.h>
 #include <iostream>
@@ -194,7 +194,7 @@ std::vector<std::string> DavinciGroupStructureManager::getTreeWithChain(const st
   if(!isChain(group))
     return res;
 
-  for(auto tree:tree_name_list_)
+  for(auto tree:tree_names_list_)
   {
     if(std::find(tree_composition_.at(tree).begin(), tree_composition_.at(tree).end(), group) != tree_composition_.at(tree).end())
       res.push_back (tree);
@@ -210,9 +210,9 @@ std::string DavinciGroupStructureManager::findGroupName(const std::vector<std::s
 
   for(auto& ee:ee_list)
   {
-    if(is_tree(ee))
+    if(isTree(ee))
     {
-      for(auto& c:tree_compostion_.at(ee))
+      for(auto& c:tree_composition_.at(ee))
       {
         ee_list_local.push_back(c);
       }
@@ -223,7 +223,7 @@ std::string DavinciGroupStructureManager::findGroupName(const std::vector<std::s
 
   for(auto& t:tree_composition_)
   {
-    boo found = true;
+    bool found = true;
     for(auto& ee:ee_list_local)
     {
       found = (std::find(t.second.begin(),t.second.end(),ee) != t.second.end());

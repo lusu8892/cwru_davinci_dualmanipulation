@@ -128,7 +128,7 @@ private:
    * @brief utility function to set class variables which depend on parameters
    * @return void
    */
-  bool setParameterDependentVariables();
+  void setParameterDependentVariables();
 
   /**
    * @brief set the target robot state of the eef @param ee_name to the target specified in the SRDF

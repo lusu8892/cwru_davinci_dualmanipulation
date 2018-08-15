@@ -41,9 +41,9 @@
 #define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_SHARED_IK_MEMORY_H
 
 #include <mutex>
-//#include <dual_manipulation_ik_control/group_structure_manager.h>
-//#include <dual_manipulation_ik_control/robot_controller_interface.h>
-//#include <dual_manipulation_ik_control/robot_state_manager.h>
+#include <dual_manipulation_ik_control/group_structure_manager.h>
+#include <dual_manipulation_ik_control/robot_controller_interface.h>
+#include <dual_manipulation_ik_control/robot_state_manager.h>
 //#include <dual_manipulation_ik_control/scene_object_manager.h>
 #include <moveit/planning_pipeline/planning_pipeline.h>
 #include <moveit/planning_interface/planning_interface.h>

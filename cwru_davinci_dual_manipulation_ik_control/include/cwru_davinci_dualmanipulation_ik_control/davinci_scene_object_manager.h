@@ -36,38 +36,31 @@
  * Description:
  */
 
-#ifndef CWRU_DAVINCI_DUAL_MANIPULATION_SHARED_PARSING_UTILS_H
-#define CWRU_DAVINCI_DUAL_MANIPULATION_SHARED_PARSING_UTILS_H
+#ifndef CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_SCENE_OBJECT_MANAGER_H
+#define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_SCENE_OBJECT_MANAGER_H
 
-#include <XmlRpcValue.h>
+#include <ros/ros.h>
+#include <dual_manipulation_shared/scene_object_service.h>
+#include <dual_manipulation_shared/databasemapper.h>
+#include <cwru_davinci_dualmanipulation_ik_control/group_structure_manager.h>
+#include <moveit_msgs/AttachedCollisionObject.h>
+#include <mutex>
+#include <moveit/planning_scene_monitor/planning_scene_monitor.h>
 
 namespace cwru_davinci_dual_manipulation
 {
-namespace shared
+namespace cwru_davinci_ik_control
 {
-bool parseSingleParameter(XmlRpc::XmlRpcValue &params, bool &param, std::string param_name);
 
-bool parseSingleParameter(XmlRpc::XmlRpcValue &params, double &param, std::string param_name);
+static const std::string ADD_OBJECT("add");
+static const std::string REMOVE_OBJECT("remove");
+static const std::string ATTACH_OBJECT("attach");
+static const std::string DETACH_OBJECT("detach");
+static const std::string REMOVE_ALL_OBJECTS("remove_all");
 
-bool parseSingleParameter(XmlRpc::XmlRpcValue &params, int &param, std::string param_name);
 
-bool parseSingleParameter(XmlRpc::XmlRpcValue &params, std::string &param, std::string param_name);
-
-bool parseSingleParameter(XmlRpc::XmlRpcValue &params,
-                          std::vector<double> &param,
-                          std::string param_name,
-                          int min_size = 0);
-
-bool parseSingleParameter(XmlRpc::XmlRpcValue &params,
-                          std::vector <std::string> &param,
-                          std::string param_name,
-                          int min_size = 0);
-
-bool parseSingleParameter(XmlRpc::XmlRpcValue &params,
-                          std::map <std::string, std::string> &param,
-                          std::string param_name,
-                          std::vector <std::string> names_list);
-}
 
 }
-#endif // CWRU_DAVINCI_DUAL_MANIPULATION_SHARED_PARSING_UTILS_H
+}
+
+#endif //CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_SCENE_OBJECT_MANAGER_H

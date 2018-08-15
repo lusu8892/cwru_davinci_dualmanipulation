@@ -151,16 +151,16 @@ public:
 
   }
 
-  ~DavinciIKControlCapability(){};
+  ~DavinciIKControlCapability()
+  {};
 
-  std::map<IKControlCapabilities,std::string> name;
-  std::map<std::string,IKControlCapabilities> from_name;
-  std::map<IKControlCapabilities,std::string> msg;
+  std::map <IKControlCapabilities, std::string> name;
+  std::map <std::string, IKControlCapabilities> from_name;
+  std::map <IKControlCapabilities, std::string> msg;
 
-  std::map<IKControlCapabilities,IKControlCapabilityTypes> type;
-  std::map<IKControlCapabilityTypes,bool> implemented_for_trees;
+  std::map <IKControlCapabilities, IKControlCapabilityTypes> type;
+  std::map<IKControlCapabilityTypes, bool> implemented_for_trees;
 };
-
 
 
 #endif //SHARED_DAVINCI_IK_CONTROL_CAPABILITIES_H

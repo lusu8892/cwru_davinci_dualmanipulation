@@ -38,7 +38,7 @@
  */
 
 #include <string>
-#include <dual_manipulation_ik_control/robot_state_manager.h>
+#include <cwru_davinci_dualmanipulation_ik_control/davinci_robot_state_manager.h>
 #include <moveit/robot_trajectory/robot_trajectory.h>
 
 #define CLASS_LOGNAME "DavinciRobotStateManager"
@@ -50,8 +50,8 @@ DavinciRobotStateManager::DavinciRobotStateManager(const moveit::core::RobotMode
   : full_robot_name_(full_robot_group)
 {
   const boost::shared_ptr<tf::Transformer> tf(new tf::Transformer());
-  current_robot_monitor_.reset(new planning_scene_monitor::CurrentStateMonitor(robot_model,tf));
-  current_robot_monitor_->startStateMonitor(joint_states_topic);
+  current_state_monitor_.reset(new planning_scene_monitor::CurrentStateMonitor(robot_model,tf));
+  current_state_monitor_->startStateMonitor(joint_states_topic);
   updateCurrentState(full_robot_name_);
 }
 
@@ -99,7 +99,7 @@ bool DavinciRobotStateManager::resetRobotState(const moveit::core::RobotStatePtr
   }
 
   //NOTE: robot_traj, built on robot_model, contains the full robot; trajectory, instead, is only for the group joints
-  robobt_trajectory::RobotTrajectory robot_traj(rs->getRobotModel, group);
+  robot_trajectory::RobotTrajectory robot_traj(rs->getRobotModel, group);
   robot_traj.setRobotTrajectoryMsg(*rs, traj);
 
   for(int i=0; i<rs->getVariableCount(); i++)
