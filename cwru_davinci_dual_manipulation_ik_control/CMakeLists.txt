@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(cwru_davinci_dual_manipulation_ik_control)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+ add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   tf
   tf_conversions
+  cwru_davinci_dual_manipulation_shared
 )
 
 ## System dependencies are found with CMake's conventions
@@ -107,8 +108,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-#  LIBRARIES cwru_davinci_dual_manipulation_ik_control
-#  CATKIN_DEPENDS moveit_core moveit_ros_planning moveit_ros_planning_inteface roscpp tf tf_conversions
+#  LIBRARIES
+#  CATKIN_DEPENDS moveit_core moveit_ros_planning moveit_ros_planning_interface roscpp tf tf_conversions cwru_davinci_dual_manipulation_shared
 #  DEPENDS system_lib
 )
 
@@ -134,7 +135,7 @@ set(SOURCE_FILES
 #  src/ik_control.cpp
 #  src/ros_server.cpp
 #  src/main.cpp
-#  ${IK_CAPABILITIES_FILES}
+  ${IK_CAPABILITIES_FILES}
   src/davinci_group_structure_manager.cpp
 #  src/robot_controller_interface.cpp
   src/davinci_robot_state_manager.cpp

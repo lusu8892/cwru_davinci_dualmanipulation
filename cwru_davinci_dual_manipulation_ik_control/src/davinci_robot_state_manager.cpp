@@ -38,7 +38,7 @@
  */
 
 #include <string>
-#include <cwru_davinci_dualmanipulation_ik_control/davinci_robot_state_manager.h>
+#include <cwru_davinci_dual_manipulation_ik_control/davinci_robot_state_manager.h>
 #include <moveit/robot_trajectory/robot_trajectory.h>
 
 #define CLASS_LOGNAME "DavinciRobotStateManager"
@@ -62,14 +62,14 @@ bool DavinciRobotStateManager::resetRobotState(const moveit::core::RobotStatePtr
   if (!updateCurrentState(group))
     return false;
   std::unique_lock<std::mutex> lck1(rs_mutex, std::defer_lock);
-  st::unique_lock<std::mutex> lck2(cs_mutex_, std::defer_lock);
+  std::unique_lock<std::mutex> lck2(cs_mutex_, std::defer_lock);
 
   // check that we are using the same robot
-  assert(current_state_ >getRobotModel()->getName() == rs->getRobotModel()->getName());
+  assert(current_state_ ->getRobotModel()->getName() == rs->getRobotModel()->getName());
 
   ROS_INFO_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : resetting " << rs->getRobotModel()->getName());
 
-  for(int i = 0; i < rs->getVaraiableCount(); i++)
+  for(int i = 0; i < rs->getVariableCount(); i++)
   {
     rs->setVariablePosition(i, current_state_->getVariablePosition(i));
   }
@@ -86,7 +86,7 @@ bool DavinciRobotStateManager::resetRobotState(const moveit::core::RobotStatePtr
     return true;
 
   std::unique_lock<std::mutex> lck1(rs_mutex, std::defer_lock);
-  st::unique_lock<std::mutex> lck2(cs_mutex_, std::defer_lock);
+  std::unique_lock<std::mutex> lck2(cs_mutex_, std::defer_lock);
 
   ROS_INFO_STREAM_NAMED(CLASS_LOGNAME, CLASS_NAMESPACE << __func__ << " : resetting " << rs->getRobotModel()->getName()
                                                        << " with a trajectory for group " << group);
@@ -99,7 +99,7 @@ bool DavinciRobotStateManager::resetRobotState(const moveit::core::RobotStatePtr
   }
 
   //NOTE: robot_traj, built on robot_model, contains the full robot; trajectory, instead, is only for the group joints
-  robot_trajectory::RobotTrajectory robot_traj(rs->getRobotModel, group);
+  robot_trajectory::RobotTrajectory robot_traj(rs->getRobotModel(), group);
   robot_traj.setRobotTrajectoryMsg(*rs, traj);
 
   for(int i=0; i<rs->getVariableCount(); i++)

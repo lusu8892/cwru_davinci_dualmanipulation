@@ -33,34 +33,28 @@
  *********************************************************************/
 
 /* Author: Su Lu <sxl924@case.edu>
- * Description:
+ * Description: A class to manage a single object in an atomic manner,
+ * making sure that it gets assigned a desired value (when this object goes out of scope,
+ * it makes the assignment using the appropriate LOCK-able variable)
  */
 
-#ifndef CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_SCENE_OBJECT_MANAGER_H
-#define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_SCENE_OBJECT_MANAGER_H
 
-#include <ros/ros.h>
+#include <dual_manipulation_shared/ik_service.h>
 #include <dual_manipulation_shared/scene_object_service.h>
-#include <dual_manipulation_shared/databasemapper.h>
-#include <cwru_davinci_dualmanipulation_ik_control/group_structure_manager.h>
-#include <moveit_msgs/AttachedCollisionObject.h>
+#include "ik_check_capability/ik_check_capability.h"
+#include <thread>
+#include <XmlRpcValue.h>
 #include <mutex>
-#include <moveit/planning_scene_monitor/planning_scene_monitor.h>
+#include <std_msgs/String.h>
 
-namespace cwru_davinci_dual_manipulation
-{
-namespace cwru_davinci_ik_control
-{
-
-static const std::string ADD_OBJECT("add");
-static const std::string REMOVE_OBJECT("remove");
-static const std::string ATTACH_OBJECT("attach");
-static const std::string DETACH_OBJECT("detach");
-static const std::string REMOVE_ALL_OBJECTS("remove_all");
+// capabilities definition
+#include <dual_manipulation_shared/ik_control_capabilities.h>
+#include <cwru_davinci_dual_manipulation_ik_control/random_planning_capability.h>
+#include <cwru_davinci_dual_manipulation_ik_control/trajectory_execution_capability.h>
+#include <cwru_davinci_dual_manipulation_ik_control/grasping_capability.h>
 
 
+#ifndef CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_IK_CONTROL_H
+#define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_IK_CONTROL_H
 
-}
-}
-
-#endif //CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_SCENE_OBJECT_MANAGER_H
+#endif //CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_IK_CONTROL_H

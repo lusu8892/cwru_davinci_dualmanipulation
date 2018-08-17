@@ -2,13 +2,17 @@ cmake_minimum_required(VERSION 2.8.3)
 project(cwru_davinci_dual_manipulation_shared)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  std_msgs
+  geometry_msgs
+  moveit_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -52,11 +56,15 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  ik_service.srv
+#  ik_service_legacy.srv
+#  planner_service.srv
+#  scene_object_service.srv
+#  state_manager_service.srv
+#  gui_target_service.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -66,10 +74,12 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   std_msgs
+   geometry_msgs
+   moveit_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -101,8 +111,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES shared
+  INCLUDE_DIRS include
+  LIBRARIES ${PROJECT_NAME}
 #  CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
 )
@@ -113,15 +123,11 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
-# include
-  ${catkin_INCLUDE_DIRS}
-)
+include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/shared.cpp
-# )
+add_library(${PROJECT_NAME} src/parsing_utils.cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

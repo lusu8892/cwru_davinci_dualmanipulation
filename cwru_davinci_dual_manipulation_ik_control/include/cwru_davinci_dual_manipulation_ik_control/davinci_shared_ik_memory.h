@@ -41,13 +41,14 @@
 #define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_SHARED_IK_MEMORY_H
 
 #include <mutex>
-#include <dual_manipulation_ik_control/group_structure_manager.h>
-#include <dual_manipulation_ik_control/robot_controller_interface.h>
-#include <dual_manipulation_ik_control/robot_state_manager.h>
-//#include <dual_manipulation_ik_control/scene_object_manager.h>
+#include <cwru_davinci_dual_manipulation_ik_control/davinci_group_structure_manager.h>
+#include <cwru_davinci_dual_manipulation_ik_control/davinci_robot_controller_interface.h>
+#include <cwru_davinci_dual_manipulation_ik_control/davinci_robot_state_manager.h>
+//#include <cwru_davinci_dual_manipulation_ik_control/davinci_scene_object_manager.h>
 #include <moveit/planning_pipeline/planning_pipeline.h>
 #include <moveit/planning_interface/planning_interface.h>
-#include <moveit/move_group_interface/move_group.h>
+#include <moveit/move_group_interface/move_group_interface.h>
+#include <moveit/robot_model_loader/robot_model_loader.h>
 #include <XmlRpcValue.h>
 
 namespace cwru_davinci_dual_manipulation
@@ -89,7 +90,7 @@ public:
    *
    * @return false if a trajectory execution was not pending, true otherwise.
    */
-  bool setNextTrajectoryRelativeEndTime(const ros::Ruration& dt);
+  bool setNextTrajectoryRelativeEndTime(const ros::Duration& dt);
 
   /**
    * @brief Get trajectory execution end time.
@@ -127,16 +128,16 @@ public:
 
 public:
   std::mutex m;
-  XmpRpc::XmlRpcValue* ik_control_params;
+  XmlRpc::XmlRpcValue* ik_control_params;
 
   // manage robot group structure
-  std::unqiue_ptr<const GroupStructureManager> groupManager;
+  std::unique_ptr<const DavinciGroupStructureManager> groupManager;
   // manage robot controllers
-  std::unique_ptr<const RobotControllerInterface> robotController;
+//  std::unique_ptr<const DavinciRobotControllerInterface> robotController;
   // manage robot states
-  std::unique_ptr<const RobotStateManager> robotStateManager;
+  std::unique_ptr<const DavinciRobotStateManager> robotStateManager;
   // managing the objects in the scene
-  std::unique_ptr<SceneObjectManager> sceneObjectManager;
+//  std::unique_ptr<SceneObjectManager> sceneObjectManager;
 
 private:
   // MoveIt! variables
@@ -157,7 +158,7 @@ private:
 
   // share the motion plans among planning/control capabilities
   std::mutex movePlans_mutex_;
-  std::map<std::string, moveit::planning_interface::MoveGroup::Plan> movePlans_;
+  std::map<std::string, moveit::planning_interface::MoveGroupInterface::Plan> movePlans_;
 
 private:
   /**

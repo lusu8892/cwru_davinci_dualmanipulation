@@ -39,7 +39,8 @@
 #include <cwru_davinci_dual_manipulation_shared/parsing_utils.h>
 
 // only used for INFO, ASSERT, and WARN functions
-#include "ros/ros.h"
+#include <ros/ros.h>
+#include <string>
 
 #define CLASS_NAMESPACE "ParsingUtils::"
 
@@ -117,7 +118,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue &params, std::string &param, std::
 bool parseSingleParameter(XmlRpc::XmlRpcValue &params,
                           std::vector<double> &param,
                           std::string param_name,
-                          int min_size = 0)
+                          int min_size)
 {
   std::string vector_str;
 
@@ -149,7 +150,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue &params,
   param.clear();
   for(int i = 0; i < params[param_name].size(); i++)
   {
-    param.push_back( (double) paramsp[param_name][i]);
+    param.push_back( (double) params[param_name][i]);
     vector_str.append( std::to_string(param.back()) ).append(" | ");
   }
 
@@ -160,9 +161,9 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue &params,
 bool parseSingleParameter(XmlRpc::XmlRpcValue &params,
                           std::vector <std::string> &param,
                           std::string param_name,
-                          int min_size = 0)
+                          int min_size)
 {
-  td::string vector_str;
+  std::string vector_str;
 
   if( !params.hasMember(param_name) )
   {
@@ -187,7 +188,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue &params,
     return false;
   }
 
-  ROS_ASSERT(params[param_name].getType() == XmlRpc::XmlRpcValue::TypeArrays);
+  ROS_ASSERT(params[param_name].getType() == XmlRpc::XmlRpcValue::TypeArray);
 
   param.clear();
   for(int i=0; i< params[param_name].size(); i++)

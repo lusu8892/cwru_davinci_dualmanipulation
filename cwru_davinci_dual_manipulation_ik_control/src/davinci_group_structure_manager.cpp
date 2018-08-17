@@ -40,8 +40,8 @@
  * It also provides some useful functionalities to find the right group to use in some circumstances.
  */
 
-#include <cwru_davinci_dualmanipulation_ik_control/davinci_group_structure_manager.h>
-#include <cwru_davinci_dualmanipulation_shared/parsing_utils.h>
+#include <cwru_davinci_dual_manipulation_ik_control/davinci_group_structure_manager.h>
+#include <cwru_davinci_dual_manipulation_shared/parsing_utils.h>
 #include <assert.h>
 #include <iostream>
 #include <string>

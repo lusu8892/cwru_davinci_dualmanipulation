@@ -1,0 +1,22 @@
+# possible commands:
+# "ik_check", "plan", "execute", "grasp", "ungrasp", "home"
+# - ik_check, grasp, and ungrasp are only for left_hand and right_hand, not both_hands
+string command
+# ee_name is one of the "psm_one", "psm_two", "both_psm"
+string ee_name
+float64 time
+# ee_pose is used if the command is ik_check or plan as following:
+# - use Pose[0] if the ee_name is either "psm_one" or "psm_two"
+# - if ee_name is "both_psm", Pose[0] is for the "psm_one", Pose[1] for the "psm_two"
+# it is also used if the command is grasp as waypoints for the end-effector
+geometry_msgs/Pose[] ee_pose
+# if the command is grasp, hand joint trajectory points
+trajectory_msgs/JointTrajectory grasp_trajectory
+# object identifier - identifies the appropriate entry in the database
+uint64 object_db_id
+# if the command is grasp, object to attach to the grasping end-effector
+moveit_msgs/AttachedCollisionObject attObject
+# sequence number
+uint32 seq
+---
+bool ack

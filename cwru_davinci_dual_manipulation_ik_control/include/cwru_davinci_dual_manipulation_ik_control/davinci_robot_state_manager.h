@@ -86,10 +86,10 @@ class DavinciRobotStateManager
    *
    * @return true on success
    */
-  bool reset_robot_state(const moveit::core::RobotStatePtr &rs,
-                         const std::string &group,
-                         std::mutex &rs_mutex,
-                         const moveit_msgs::RobotTrajectory &traj) const;
+  bool resetRobotState(const moveit::core::RobotStatePtr &rs,
+                       const std::string &group,
+                       std::mutex &rs_mutex,
+                       const moveit_msgs::RobotTrajectory &traj) const;
 
   /**
    * @brief Return a copy of the internal robot state

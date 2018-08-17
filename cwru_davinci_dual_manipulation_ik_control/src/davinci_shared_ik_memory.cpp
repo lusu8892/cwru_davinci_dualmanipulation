@@ -33,33 +33,58 @@
  *********************************************************************/
 
 /* Author: Su Lu <sxl924@case.edu>
- * Description: An abstract class implementing a generic capability for use inside cwru_davinci_ik_control: plan, move, grasp, ...
+ * Description: The management of shared memory between threads.
+ * A structure to share resources across implemented capabilities: plan, move, grasp, ...
  */
 
-#ifndef CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_ABSTRACT_CAPABILITY_H
-#define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_ABSTRACT_CAPABILITY_H
+#include <cwru_davinci_dual_manipulation_ik_control/davinci_shared_ik_memory.h>
 
-#include <cwru_davinci_dual_manipulation_shared/davinci_ik_control_capabilities.h>
+#include <cwru_davinci_dual_manipulation_shared/parsing_utils.h>
 
-namespace cwru_davinci_dual_manipulation
+using namespace cwru_davinci_dual_manipulation::cwru_davinci_ik_control;
+
+DavinciSharedIKMemory::DavinciSharedIKMemory(XmlRpc::XmlRpcValue& params, const ros::NodeHandle& nh)
 {
-namespace cwru_davinci_ik_control
-{
-class DavinciAbstractCapability
-{
-public:
-  DavinciAbstractCapability(){}
-  virtual ~DavinciAbstractCapability(){}
-  virtual bool isComplete() = 0;
-  virtual void performRequest(dual_manipulation_shared::ik_serviceRequest req) = 0;
-  virtual bool getResults(dual_manipulation_shared::ik_response& res) = 0;
-  virtual bool canRun() = 0;
-  /// could be associated with a type coming from ik_control_capabilities.h
-  virtual bool canPerformCapability(const IKControlCapabilities& ik_capability) const = 0;
-  virtual void reset(){}
-};
 
 }
+
+void DavinciSharedIKMemory::reset()
+{
+  void;
 }
 
-#endif // CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_ABSTRACT_CAPABILITY_H
+bool DavinciSharedIKMemory::swapTrajectory(const std::string& group, moveit_msgs::RobotTrajectory& traj)
+{
+  void;
+}
+
+bool DavinciSharedIKMemory::setPendingTrajectoryExecution()
+{
+  void;
+}
+
+bool DavinciSharedIKMemory::setNextTrajectoryRelativeEndTime(const ros::Duration& dt)
+{
+  void;
+}
+
+bool DavinciSharedIKMemory::getNextTrajectoryEndTime(ros::Time& end_t)
+{
+  void;
+}
+
+moveit::core::RobotState DavinciSharedIKMemory::getPlanningRobotState()
+{
+  void;
+}
+
+bool DavinciSharedIKMemory::resetPlanningRobotState(const std::string& group)
+{
+  void;
+}
+
+bool DavinciSharedIKMemory::resetPlanningRobotState(const std::string& group, const moveit_msgs::RobotTrajectory& traj)
+{}
+
+void DavinciSharedIKMemory::parseParameters(XmlRpc::XmlRpcValue& params)
+{}

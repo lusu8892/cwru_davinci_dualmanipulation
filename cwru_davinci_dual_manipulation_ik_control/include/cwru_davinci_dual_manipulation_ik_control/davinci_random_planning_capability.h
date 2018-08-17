@@ -52,11 +52,11 @@ namespace cwru_davinci_ik_control
 class DavinciRandomPlanningCapability : public DavinciGenericPlanningCapability
 {
 public:
-  DavinciRandomPlanningCapability(shared_ik_memory& sikm, const ros::NodeHandle& nh = ros::NodeHandle());
+  DavinciRandomPlanningCapability(DavinciSharedIKMemory& sikm, const ros::NodeHandle& nh = ros::NodeHandle());
   virtual ~DavinciRandomPlanningCapability();
   virtual bool isComplete();
-  virtual void performRequest(dual_manipulation_shared::ik_serviceRequest req);
-  virtual bool getResults(dual_manipulation_shared::ik_response& res);
+  virtual void performRequest(cwru_davinci_dual_manipulation_shared::ik_serviceRequest req);
+  virtual bool getResults(cwru_davinci_dual_manipulation_shared::ik_response& res);
   virtual bool canRun();
   virtual bool canPerformCapability(const IKControlCapabilities& ik_capability) const;
   virtual void reset();
@@ -66,17 +66,17 @@ public:
    *
    * @param req the same req from the @e ik_service
    */
-  void add_target(const dual_manipulation_shared::ik_service::Request& req);
+  void add_target(const cwru_davinci_dual_manipulation_shared::ik_service::Request& req);
 
 private:
-  shared_ik_memory& sikm_;
-  const DavinciIKControlCapability davinciIKControlCapability;
+  DavinciSharedIKMemory& sikm_;
+  const DavinciIKControlCapability capability_;
 
   std::mutex map_mutex_;
   std::mutex robotState_mutex_;
 
   // keep an history of the required targets
-  std::map<std::string, cwru_davinci_dual_manipulation::cwru_davinci_ik_control::IKTarget> targets_;
+  std::map<std::string, IKTarget> targets_;
 
   // MoveIt! variables
   moveit::core::RobotModelPtr robot_model_;
@@ -101,8 +101,8 @@ private:
   std::vector<double> ws_bounds_;
 
   // interface and results variables
-  std::atomic_bool busy;
-  shared::ik_response plan_response;
+  std::atomic_bool busy_;
+  cwru_davinci_dual_manipulation_shared::shared::ik_response plan_response_;
 
 private:
 
