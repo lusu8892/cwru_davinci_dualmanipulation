@@ -269,7 +269,44 @@ void DavinciRandomPlanningCapability::performRequest(cwru_davinci_dual_manipulat
     bool copy_attached_bodies(check_collisions);
 
     //TO
+    moveit::core::robotStateToRobotStateMsg(sikm_.getPlanningRobotState(),MotionPlanReq_.start_state);
+    MotionPlanReq_.start_state.attached_collision_objects.clear();
 
+    if(copy_attached_bodies)
+    {
+      auto aco = sikm_.sceneObjectManager->getAttachedCollisionObjects();
+      MotionPlanReq_.start_state.attached_collision_objects.insert(
+        MotionPlanReq_.start_state.attached_collision_objects.begin(), aco->begin(), aco->end());
+    }
+
+    #if DEBUG>1
+    ROS_INFO_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : debugging attachedn collision objects...\n");
+    for(auto attObject:MotionPlanReq_.start_state.attached_collision_objects)
+    {
+      std::cout << attObject.object.id << ": touch links are > | " << std::endl;
+      for(auto link:attObject.touch_links)
+        std::cout << link << " | ";
+      std::cout << std::endl;
+      std::cout << "waiting for input..." << std::endl;;
+      char y;
+      std::cin >> y;
+    }
+    #endif
+
+    MotionPlanReq_.start_state.is_diff = false;
+
+    //
+    MotionPlanReq_.goal_constraints.clear();
+
+    moveit_msgs::Constraints empty_constr;
+    MotionPlanReq_.path_constraints = empty_constr;
+
+    moveit_msgs::TrajectoryConstraints empty_traj_constr;
+    MotionPlanReq_.trajectory_constraints = empty_traj_constr;
+
+    bool planRes = buildMotionPlanRequest(MotionPlanReq_,local_targets,local_capability);
+
+    
   }
 
 }

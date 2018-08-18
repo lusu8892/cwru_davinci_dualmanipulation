@@ -40,8 +40,11 @@
 #ifndef CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_RANDOM_PLANNING_CAPABILITY_H
 #define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_RANDOM_PLANNING_CAPABILITY_H
 
-#include <cwru_davinci_dual_manipulation_ik_control/davinci_generic_planning_capability.h>
 #include <atomic>
+#include <cwru_davinci_dual_manipulation_ik_control/davinci_generic_planning_capability.h>
+
+#include <moveit_msgs/AttachedCollisionObject.h>
+#include <moveit/planning_scene_monitor/planning_scene_monitor.h>
 #include <moveit/robot_model_loader/robot_model_loader.h>
 
 namespace cwru_davinci_dual_manipulation
