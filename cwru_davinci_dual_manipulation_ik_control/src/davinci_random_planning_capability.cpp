@@ -269,17 +269,17 @@ void DavinciRandomPlanningCapability::performRequest(cwru_davinci_dual_manipulat
     bool copy_attached_bodies(check_collisions);
 
     //TO
-    moveit::core::robotStateToRobotStateMsg(sikm_.getPlanningRobotState(),MotionPlanReq_.start_state);
+    moveit::core::robotStateToRobotStateMsg(sikm_.getPlanningRobotState(), MotionPlanReq_.start_state);
     MotionPlanReq_.start_state.attached_collision_objects.clear();
 
-    if(copy_attached_bodies)
+    if (copy_attached_bodies)
     {
       auto aco = sikm_.sceneObjectManager->getAttachedCollisionObjects();
       MotionPlanReq_.start_state.attached_collision_objects.insert(
         MotionPlanReq_.start_state.attached_collision_objects.begin(), aco->begin(), aco->end());
     }
 
-    #if DEBUG>1
+#if DEBUG > 1
     ROS_INFO_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : debugging attachedn collision objects...\n");
     for(auto attObject:MotionPlanReq_.start_state.attached_collision_objects)
     {
@@ -291,7 +291,7 @@ void DavinciRandomPlanningCapability::performRequest(cwru_davinci_dual_manipulat
       char y;
       std::cin >> y;
     }
-    #endif
+#endif
 
     MotionPlanReq_.start_state.is_diff = false;
 
@@ -304,10 +304,108 @@ void DavinciRandomPlanningCapability::performRequest(cwru_davinci_dual_manipulat
     moveit_msgs::TrajectoryConstraints empty_traj_constr;
     MotionPlanReq_.trajectory_constraints = empty_traj_constr;
 
-    bool planRes = buildMotionPlanRequest(MotionPlanReq_,local_targets,local_capability);
+    bool planRes = buildMotionPlanRequest(MotionPlanReq_, local_targets, local_capability);
 
-    
+    if (!planRes)
+      ROS_ERROR_STREAM_NAMED(CLASS_LOGNAME,
+                             CLASS_NAMESPACE << __func__ << " : unable to obtain motion planning request!!!");
+    else
+    {
+      {
+        const planning_scene::PlanningSceneConstPtr ps = sikm_.sceneObjectManager->lockAndGetReadOnlyPlanningScene();
+        planRes = pipeline_->generatePlan(ps, MotionPlanReq_, MotionPlanRes);
+      }
+
+      if (planRes)
+      {
+        moveit_msgs::MotionPlanResponse msg;
+        MotionPlanRes.getMessage(msg);
+        movePlan.trajectory_ = msg.trajectory;
+      }
+    }
+
+    error_code = MotionPlanRes.error_code_;
+    ROS_INFO_STREAM_NAMED(CLASS_LOGNAME + "_TIMING",
+                          b << CLASS_NAMESPACE << __func__ << " : This planning (" << planner_id_ << ") took [s]: "
+                            << (ros::Time::now() - planning_start).toSec() << n);
+
+    if (error_code.val != moveit::planning_interface::MoveItErrorCode::SUCCESS)
+    {
+      ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,
+                            CLASS_NAMESPACE << __func__ << " : unable to plan with \'" << backup_planner_id_
+                                            << "\' with timeout of " << plan_time << "s, trying last time with \'"
+                                            << backup_planner_id_ << "\' and timeout of " << backup_planning_time_
+                                            << "s");
+
+      MotionPlanReq_.planner_id = backup_planner_id_;
+      MotionPlanReq_.allowed_planning_time = backup_planning_time_;
+      MotionPlanReq_.num_planning_attempts = backup_max_planning_attempts_;
+      {
+        const planning_scene::PlanningSceneConstPtr ps = sikm_.sceneObjectManager->lockAndGetReadOnlyPlanningScene();
+        planRes = pipeline_->generatePlan(ps, MotionPlanReq_, MotionPlanRes);
+      }
+      if (planRes)
+      {
+        moveit_msgs::MotionPlanResponse msg;
+        MotionPlanRes.getMessage(msg);
+        movePlan.trajectory_ = msg.trajectory;
+      }
+
+      error_code = MotionPlanRes.error_code_;
+      ROS_INFO_STREAM_NAMED(CLASS_LOGNAME + "_TIMING",
+                            b << CLASS_NAMESPACE << __func__ << " : This planning (" << backup_planner_id_
+                              << ") took [s]: " << (ros::Time::now() - planning_start).toSec() << n);
+
+      MotionPlanReq_.planner_id = planner_id_;
+      MotionPlanReq_.allowed_planning_time = planning_time_;
+      MotionPlanReq_.num_planning_attempts = max_planning_attempts_;
+    }
+
+    if (!movePlan.trajectory_.joint_trajectory.points.empty())
+    {
+      // TODO
+      need_replan = !checkTrajectoryContinuity(movePlan.trajectory_, ALLOWED_JOINT_JUMP);
+    }
+    else
+      need_replan = false;
+
+    // make sure any wrong plan is erased
+    if (need_replan)
+      movePlan.trajectory_ = moveit_msgs::RobotTrajectory();
   }
+
+
+  ROS_INFO_STREAM_NAMED(CLASS_LOGNAME, CLASS_NAMESPACE << __func__ << " : movePlan traj size: "
+                                                       << movePlan.trajectory_.joint_trajectory.points.size()
+                                                       << std::endl);
+  for (int i = 0; i < movePlan.trajectory_.joint_trajectory.points.size(); i++)
+  {
+    ROS_DEBUG_STREAM(movePlan.trajectory_.joint_trajectory.points.at(i) << std::endl);
+  }
+
+  ROS_DEBUG_STREAM("pos [x y z]: " << req.ee_pose.at(0).position.x << " "
+                                   << req.ee_pose.at(0).position.y << " "
+                                   << req.ee_pose.at(0).position.z << std::endl);
+  ROS_DEBUG_STREAM(
+    "orient [x y z w]: " << req.ee_pose.at(0).orientation.x << " " << req.ee_pose.at(0).orientation.y << " "
+                         << req.ee_pose.at(0).orientation.z << " " << req.ee_pose.at(0).orientation.w << std::endl);
+
+  if (error_code.val == moveit::planning_interface::MoveItErrorCode::SUCCESS)
+  {
+    plan_response_.data = "done";
+
+    moveit_msgs::RobotTrajectory traj = movePlan.trajectory_;
+    sikm_.swapTrajectory(req.ee_name, traj);
+  }
+  else
+  {
+    plan_response_.data = "error";
+  }
+
+  // update planning_init_rs_ with trajectory last waypoint
+  sikm_.resetPlanningRobotState(group_name_true, movePlan.trajectory_);
+  busy_.store(false);
+  return;
 
 }
 

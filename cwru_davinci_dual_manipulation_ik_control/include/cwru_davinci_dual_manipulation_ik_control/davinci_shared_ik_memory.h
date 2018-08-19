@@ -44,7 +44,7 @@
 #include <cwru_davinci_dual_manipulation_ik_control/davinci_group_structure_manager.h>
 #include <cwru_davinci_dual_manipulation_ik_control/davinci_robot_controller_interface.h>
 #include <cwru_davinci_dual_manipulation_ik_control/davinci_robot_state_manager.h>
-//#include <cwru_davinci_dual_manipulation_ik_control/davinci_scene_object_manager.h>
+#include <cwru_davinci_dual_manipulation_ik_control/davinci_scene_object_manager.h>
 #include <moveit/planning_pipeline/planning_pipeline.h>
 #include <moveit/planning_interface/planning_interface.h>
 #include <moveit/move_group_interface/move_group_interface.h>
@@ -137,7 +137,7 @@ public:
   // manage robot states
   std::unique_ptr<const DavinciRobotStateManager> robotStateManager;
   // managing the objects in the scene
-//  std::unique_ptr<SceneObjectManager> sceneObjectManager;
+  std::unique_ptr<DavinciSceneObjectManager> sceneObjectManager;
 
 private:
   // MoveIt! variables
