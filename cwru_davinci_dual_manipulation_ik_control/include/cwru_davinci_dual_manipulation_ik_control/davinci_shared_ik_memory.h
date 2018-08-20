@@ -42,7 +42,7 @@
 
 #include <mutex>
 #include <cwru_davinci_dual_manipulation_ik_control/davinci_group_structure_manager.h>
-#include <cwru_davinci_dual_manipulation_ik_control/davinci_robot_controller_interface.h>
+//#include <cwru_davinci_dual_manipulation_ik_control/davinci_robot_controller_interface.h>
 #include <cwru_davinci_dual_manipulation_ik_control/davinci_robot_state_manager.h>
 #include <cwru_davinci_dual_manipulation_ik_control/davinci_scene_object_manager.h>
 #include <moveit/planning_pipeline/planning_pipeline.h>

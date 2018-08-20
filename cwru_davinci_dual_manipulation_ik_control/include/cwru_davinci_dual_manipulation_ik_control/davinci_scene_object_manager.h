@@ -40,9 +40,9 @@
 #define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_SCENE_OBJECT_MANAGER_H
 
 #include <ros/ros.h>
-#include <dual_manipulation_shared/scene_object_service.h>
-#include <dual_manipulation_shared/databasemapper.h>
-#include <cwru_davinci_dualmanipulation_ik_control/davinci_group_structure_manager.h>
+//#include <dual_manipulation_shared/scene_object_service.h>
+//#include <dual_manipulation_shared/databasemapper.h>
+#include <cwru_davinci_dual_manipulation_ik_control/davinci_group_structure_manager.h>
 #include <moveit_msgs/AttachedCollisionObject.h>
 #include <mutex>
 #include <moveit/planning_scene_monitor/planning_scene_monitor.h>

@@ -49,11 +49,17 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+#  planner_item.msg
+#  graph.msg
+#  grasp_trajectory.msg
+  ik_response.msg
+#  gui_target_response.msg
+#  good_grasp_msg.msg
+#  planner_service_request.msg
+#  planner_service_response.msg
+)
 
 ## Generate services in the 'srv' folder
 add_service_files(
@@ -61,7 +67,7 @@ add_service_files(
   ik_service.srv
 #  ik_service_legacy.srv
 #  planner_service.srv
-#  scene_object_service.srv
+  scene_object_service.srv
 #  state_manager_service.srv
 #  gui_target_service.srv
 )

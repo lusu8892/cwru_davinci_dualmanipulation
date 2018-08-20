@@ -43,7 +43,7 @@
 
 
 #include <moveit/kinematic_constraints/utils.h>
-#include <moveit/move_group_interface/move_group.h>
+#include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit/robot_state/conversions.h>
 
 #define CLASS_NAMESPACE "ikControl::randomPlanningCapability::"
