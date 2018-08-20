@@ -61,7 +61,7 @@ public:
   virtual void performRequest(cwru_davinci_dual_manipulation_shared::ik_serviceRequest req);
   virtual bool getResults(cwru_davinci_dual_manipulation_shared::ik_response& res);
   virtual bool canRun();
-  virtual bool canPerformCapability(const IKControlCapabilities& ik_capability) const;
+  virtual bool canPerformCapability(const IkControlCapabilities& ik_capability) const;
   virtual void reset();
 
   /**
@@ -79,7 +79,7 @@ private:
   std::mutex robotState_mutex_;
 
   // keep an history of the required targets
-  std::map<std::string, IKTarget> targets_;
+  std::map<std::string, IkTarget> targets_;
 
   // MoveIt! variables
   moveit::core::RobotModelPtr robot_model_;
@@ -117,8 +117,8 @@ private:
    * @return
    */
   bool buildMotionPlanRequest(moveit_msgs::MotionPlanRequest& req,
-                              const std::map< std::string, cwru_davinci_dual_manipulation::cwru_davinci_ik_control::IKTarget >& targets,
-                              IKControlCapabilities plan_type);
+                              const std::map< std::string, IkTarget >& targets,
+                              IkControlCapabilities plan_type);
 
   /**
    * @brief utility function to parse parameters from the parameter server

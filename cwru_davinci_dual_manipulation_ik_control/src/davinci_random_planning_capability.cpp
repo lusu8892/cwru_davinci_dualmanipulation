@@ -69,12 +69,12 @@ DavinciRandomPlanningCapability::~DavinciRandomPlanningCapability()
 
 }
 
-bool DavinciRandomPlanningCapability::canPerformCapability(const IKControlCapabilities &ik_capability) const
+bool DavinciRandomPlanningCapability::canPerformCapability(const IkControlCapabilities &ik_capability) const
 {
-  if ((ik_capability == IKControlCapabilities::PLAN) ||
-      (ik_capability == IKControlCapabilities::PLAN_NO_COLLISION) ||
-      (ik_capability == IKControlCapabilities::PLAN_BEST_EFFORT) ||
-      (ik_capability == IKControlCapabilities::PLAN_CLOSE_BEST_EFFORT))
+  if ((ik_capability == IkControlCapabilities::PLAN) ||
+      (ik_capability == IkControlCapabilities::PLAN_NO_COLLISION) ||
+      (ik_capability == IkControlCapabilities::PLAN_BEST_EFFORT) ||
+      (ik_capability == IkControlCapabilities::PLAN_CLOSE_BEST_EFFORT))
     return true;
 
   return false;
@@ -184,12 +184,12 @@ void DavinciRandomPlanningCapability::performRequest(cwru_davinci_dual_manipulat
   moveit::planning_interface::MoveGroupInterface *localMoveGroup;
   std::string group_name;
   std::string group_name_true;
-  std::map<std::string, IKTarget> local_targets;
+  std::map<std::string, IkTarget> local_targets;
   bool exists = sikm_.groupManager->getGroupInSRDF(req.ee_name, group_name);
 
   assert(exists);
-  IKControlCapabilities local_capability = capability_.from_name.at(req.command);
-  bool check_collisions = (local_capability != IKControlCapabilities::PLAN_NO_COLLISION);
+  IkControlCapabilities local_capability = capability_.from_name.at(req.command);
+  bool check_collisions = (local_capability != IkControlCapabilities::PLAN_NO_COLLISION);
 
   map_mutex_.lock();  // mutex is intended protect variable targets_
 
@@ -406,7 +406,97 @@ void DavinciRandomPlanningCapability::performRequest(cwru_davinci_dual_manipulat
   sikm_.resetPlanningRobotState(group_name_true, movePlan.trajectory_);
   busy_.store(false);
   return;
+}
 
+bool DavinciRandomPlanningCapability::isComplete()
+{
+  return !busy_.load();
+}
+
+bool DavinciRandomPlanningCapability::canRun()
+{
+  return !busy_.load();
+}
+
+bool DavinciRandomPlanningCapability::getResults(cwru_davinci_dual_manipulation_shared::ik_response &res)
+{
+  // fill response message
+  if (busy_.load())
+    return false;
+
+  res = plan_response_;
+  return true;
+}
+
+bool DavinciRandomPlanningCapability::buildMotionPlanRequest(moveit_msgs::MotionPlanRequest &req,
+                                                             const std::map<std::string, IkTarget> &targets,
+                                                             IkControlCapabilities plan_type)
+{
+  // TODO: define a set of tolerances depending on the capability (these will be parameterized from outside...!)
+  std::map<IkControlCapabilities, double> position_tolerance;
+  std::map<IkControlCapabilities, double> orientation_tolerance;
+
+  position_tolerance[IkControlCapabilities::PLAN] = goal_position_tolerance_;
+  position_tolerance[IkControlCapabilities::PLAN_BEST_EFFORT] = 10 * goal_position_tolerance_;
+  position_tolerance[IkControlCapabilities::PLAN_NO_COLLISION] = goal_position_tolerance_;
+  position_tolerance[IkControlCapabilities::PLAN_CLOSE_BEST_EFFORT] = 10 * goal_position_tolerance_;
+  orientation_tolerance[IkControlCapabilities::PLAN] = goal_orientation_tolerance_;
+  orientation_tolerance[IkControlCapabilities::PLAN_BEST_EFFORT] = 5 * goal_orientation_tolerance_;
+  orientation_tolerance[IkControlCapabilities::PLAN_NO_COLLISION] = goal_orientation_tolerance_;
+  orientation_tolerance[IkControlCapabilities::PLAN_CLOSE_BEST_EFFORT] = 50 * goal_orientation_tolerance_;
+
+  if (!position_tolerance.count(plan_type))
+  {
+    ROS_ERROR_STREAM_NAMED(CLASS_LOGNAME, CLASS_NAMESPACE << __func__ << " : Unknown plan_type!!! returning...");
+    return false;
+  }
+
+  double pos_tol = position_tolerance.at(plan_type);
+  double orient_tol = orientation_tolerance.at(plan_type);
+  double joint_tol = goal_joint_tolerance_;
+
+  bool position_only = (plan_type == IkControlCapabilities::PLAN_BEST_EFFORT ||
+                        plan_type == IkControlCapabilities::PLAN_CLOSE_BEST_EFFORT);
+
+  if (position_only)
+  {
+    ROS_INFO_STREAM_NAMED(CLASS_LOGNAME, CLASS_NAMESPACE << __func__
+                                                         << " : planning position_only > increasing the position tolerance from "
+                                                         << goal_position_tolerance_ << " to " << pos_tol);
+
+    ROS_INFO_STREAM_NAMED(CLASS_LOGNAME, CLASS_NAMESPACE << __func__
+                                                         << " : planning position_only > increasing the orientation tolerance from "
+                                                         << goal_orientation_tolerance_ << " to " << orient_tol);
+  }
+
+  bool is_close = (plan_type == IkControlCapabilities::PLAN_NO_COLLISION ||
+                   plan_type == IkControlCapabilities::PLAN_CLOSE_BEST_EFFORT);
+
+  moveit_msgs::Constraints c;
+
+  for (auto target_it:targets)
+  {
+    IkTarget& target(target_it.second);
+    moveit_msgs::Constraints c_tmp;
+
+    std::string group_name;
+    bool exists = sikm_.groupManager->getGroupInSRDF(target.ee_name, group_name);
+
+    assert(exists);
+    const moveit::core::JointModelGroup* jmg = robot_model_->getJointModelGroup(group_name);
+
+    if(target.type == IkTargetType::NAMED_TARGET)
+    {
+      setTarget(target.ee_name, target.target_name);
+
+      std::unique_lock<std::mutex> ul(robotState_mutex_);
+      c_tmp = kinematic_constraints::constructGoalConstraints(*target_rs_,jmg,joint_tol);
+    }
+    
+
+
+
+  }
 }
 
 

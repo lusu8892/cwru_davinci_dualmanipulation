@@ -66,7 +66,7 @@
 #define UNGRASP_MSG "ungrasp_done"
 #define HOME_MSG "action_done"
 
-enum class IKControlCapabilityTypes
+enum class IkControlCapabilityTypes
 {
   SET_TARGET,
   IK_CHECK,
@@ -75,7 +75,7 @@ enum class IKControlCapabilityTypes
   GRASP
 };
 
-enum class IKControlCapabilities
+enum class IkControlCapabilities
 {
   SET_TARGET,
   SET_HOME_TARGET,
@@ -95,71 +95,71 @@ class DavinciIKControlCapability
 public:
   DavinciIKControlCapability()
   {
-    name[IKControlCapabilities::SET_TARGET] = SET_TARGET_CAPABILITY;
-    name[IKControlCapabilities::SET_HOME_TARGET] = SET_HOME_TARGET_CAPABILITY;
-    name[IKControlCapabilities::IK_CHECK] = IK_CHECK_CAPABILITY;
-    name[IKControlCapabilities::PLAN] = PLAN_CAPABILITY;
-    name[IKControlCapabilities::PLAN_NO_COLLISION] = PLAN_NO_COLLISION_CAPABILITY;
-    name[IKControlCapabilities::PLAN_BEST_EFFORT] = PLAN_BEST_EFFORT_CAPABILITY;
-    name[IKControlCapabilities::PLAN_CLOSE_BEST_EFFORT] = PLAN_CLOSE_BEST_EFFORT_CAPABILITY;
-    name[IKControlCapabilities::MOVE] = MOVE_CAPABILITY;
-    name[IKControlCapabilities::GRASP] = GRASP_CAPABILITY;
-    name[IKControlCapabilities::UNGRASP] = UNGRASP_CAPABILITY;
-    name[IKControlCapabilities::HOME] = HOME_CAPABILITY;
+    name[IkControlCapabilities::SET_TARGET] = SET_TARGET_CAPABILITY;
+    name[IkControlCapabilities::SET_HOME_TARGET] = SET_HOME_TARGET_CAPABILITY;
+    name[IkControlCapabilities::IK_CHECK] = IK_CHECK_CAPABILITY;
+    name[IkControlCapabilities::PLAN] = PLAN_CAPABILITY;
+    name[IkControlCapabilities::PLAN_NO_COLLISION] = PLAN_NO_COLLISION_CAPABILITY;
+    name[IkControlCapabilities::PLAN_BEST_EFFORT] = PLAN_BEST_EFFORT_CAPABILITY;
+    name[IkControlCapabilities::PLAN_CLOSE_BEST_EFFORT] = PLAN_CLOSE_BEST_EFFORT_CAPABILITY;
+    name[IkControlCapabilities::MOVE] = MOVE_CAPABILITY;
+    name[IkControlCapabilities::GRASP] = GRASP_CAPABILITY;
+    name[IkControlCapabilities::UNGRASP] = UNGRASP_CAPABILITY;
+    name[IkControlCapabilities::HOME] = HOME_CAPABILITY;
 
-    from_name[SET_TARGET_CAPABILITY] = IKControlCapabilities::SET_TARGET;
-    from_name[SET_HOME_TARGET_CAPABILITY] = IKControlCapabilities::SET_HOME_TARGET;
-    from_name[IK_CHECK_CAPABILITY] = IKControlCapabilities::IK_CHECK;
-    from_name[PLAN_CAPABILITY] = IKControlCapabilities::PLAN;
-    from_name[PLAN_NO_COLLISION_CAPABILITY] = IKControlCapabilities::PLAN_NO_COLLISION;
-    from_name[PLAN_BEST_EFFORT_CAPABILITY] = IKControlCapabilities::PLAN_BEST_EFFORT;
-    from_name[PLAN_CLOSE_BEST_EFFORT_CAPABILITY] = IKControlCapabilities::PLAN_CLOSE_BEST_EFFORT;
-    from_name[MOVE_CAPABILITY] = IKControlCapabilities::MOVE;
-    from_name[GRASP_CAPABILITY] = IKControlCapabilities::GRASP;
-    from_name[UNGRASP_CAPABILITY] = IKControlCapabilities::UNGRASP;
-    from_name[HOME_CAPABILITY] = IKControlCapabilities::HOME;
+    from_name[SET_TARGET_CAPABILITY] = IkControlCapabilities::SET_TARGET;
+    from_name[SET_HOME_TARGET_CAPABILITY] = IkControlCapabilities::SET_HOME_TARGET;
+    from_name[IK_CHECK_CAPABILITY] = IkControlCapabilities::IK_CHECK;
+    from_name[PLAN_CAPABILITY] = IkControlCapabilities::PLAN;
+    from_name[PLAN_NO_COLLISION_CAPABILITY] = IkControlCapabilities::PLAN_NO_COLLISION;
+    from_name[PLAN_BEST_EFFORT_CAPABILITY] = IkControlCapabilities::PLAN_BEST_EFFORT;
+    from_name[PLAN_CLOSE_BEST_EFFORT_CAPABILITY] = IkControlCapabilities::PLAN_CLOSE_BEST_EFFORT;
+    from_name[MOVE_CAPABILITY] = IkControlCapabilities::MOVE;
+    from_name[GRASP_CAPABILITY] = IkControlCapabilities::GRASP;
+    from_name[UNGRASP_CAPABILITY] = IkControlCapabilities::UNGRASP;
+    from_name[HOME_CAPABILITY] = IkControlCapabilities::HOME;
 
-    msg[IKControlCapabilities::SET_TARGET] = SET_TARGET_MSG;
-    msg[IKControlCapabilities::SET_HOME_TARGET] = SET_HOME_TARGET_MSG;
-    msg[IKControlCapabilities::IK_CHECK] = IK_CHECK_MSG;
-    msg[IKControlCapabilities::PLAN] = PLAN_MSG;
-    msg[IKControlCapabilities::PLAN_NO_COLLISION] = PLAN_NO_COLLISION_MSG;
-    msg[IKControlCapabilities::PLAN_BEST_EFFORT] = PLAN_BEST_EFFORT_MSG;
-    msg[IKControlCapabilities::PLAN_CLOSE_BEST_EFFORT] = PLAN_CLOSE_BEST_EFFORT_MSG;
-    msg[IKControlCapabilities::MOVE] = MOVE_MSG;
-    msg[IKControlCapabilities::GRASP] = GRASP_MSG;
-    msg[IKControlCapabilities::UNGRASP] = UNGRASP_MSG;
-    msg[IKControlCapabilities::HOME] = HOME_MSG;
+    msg[IkControlCapabilities::SET_TARGET] = SET_TARGET_MSG;
+    msg[IkControlCapabilities::SET_HOME_TARGET] = SET_HOME_TARGET_MSG;
+    msg[IkControlCapabilities::IK_CHECK] = IK_CHECK_MSG;
+    msg[IkControlCapabilities::PLAN] = PLAN_MSG;
+    msg[IkControlCapabilities::PLAN_NO_COLLISION] = PLAN_NO_COLLISION_MSG;
+    msg[IkControlCapabilities::PLAN_BEST_EFFORT] = PLAN_BEST_EFFORT_MSG;
+    msg[IkControlCapabilities::PLAN_CLOSE_BEST_EFFORT] = PLAN_CLOSE_BEST_EFFORT_MSG;
+    msg[IkControlCapabilities::MOVE] = MOVE_MSG;
+    msg[IkControlCapabilities::GRASP] = GRASP_MSG;
+    msg[IkControlCapabilities::UNGRASP] = UNGRASP_MSG;
+    msg[IkControlCapabilities::HOME] = HOME_MSG;
 
-    type[IKControlCapabilities::SET_TARGET] = IKControlCapabilityTypes::SET_TARGET;
-    type[IKControlCapabilities::SET_HOME_TARGET] = IKControlCapabilityTypes::SET_TARGET;
-    type[IKControlCapabilities::IK_CHECK] = IKControlCapabilityTypes::IK_CHECK;
-    type[IKControlCapabilities::PLAN] = IKControlCapabilityTypes::PLAN;
-    type[IKControlCapabilities::PLAN_NO_COLLISION] = IKControlCapabilityTypes::PLAN;
-    type[IKControlCapabilities::PLAN_BEST_EFFORT] = IKControlCapabilityTypes::PLAN;
-    type[IKControlCapabilities::PLAN_CLOSE_BEST_EFFORT] = IKControlCapabilityTypes::PLAN;
-    type[IKControlCapabilities::MOVE] = IKControlCapabilityTypes::MOVE;
-    type[IKControlCapabilities::GRASP] = IKControlCapabilityTypes::GRASP;
-    type[IKControlCapabilities::UNGRASP] = IKControlCapabilityTypes::GRASP;
-    type[IKControlCapabilities::HOME] = IKControlCapabilityTypes::MOVE;
+    type[IkControlCapabilities::SET_TARGET] = IkControlCapabilityTypes::SET_TARGET;
+    type[IkControlCapabilities::SET_HOME_TARGET] = IkControlCapabilityTypes::SET_TARGET;
+    type[IkControlCapabilities::IK_CHECK] = IkControlCapabilityTypes::IK_CHECK;
+    type[IkControlCapabilities::PLAN] = IkControlCapabilityTypes::PLAN;
+    type[IkControlCapabilities::PLAN_NO_COLLISION] = IkControlCapabilityTypes::PLAN;
+    type[IkControlCapabilities::PLAN_BEST_EFFORT] = IkControlCapabilityTypes::PLAN;
+    type[IkControlCapabilities::PLAN_CLOSE_BEST_EFFORT] = IkControlCapabilityTypes::PLAN;
+    type[IkControlCapabilities::MOVE] = IkControlCapabilityTypes::MOVE;
+    type[IkControlCapabilities::GRASP] = IkControlCapabilityTypes::GRASP;
+    type[IkControlCapabilities::UNGRASP] = IkControlCapabilityTypes::GRASP;
+    type[IkControlCapabilities::HOME] = IkControlCapabilityTypes::MOVE;
 
-    implemented_for_trees[IKControlCapabilityTypes::SET_TARGET] = true;
-    implemented_for_trees[IKControlCapabilityTypes::IK_CHECK] = false;
-    implemented_for_trees[IKControlCapabilityTypes::PLAN] = true;
-    implemented_for_trees[IKControlCapabilityTypes::MOVE] = true;
-    implemented_for_trees[IKControlCapabilityTypes::GRASP] = false;
+    implemented_for_trees[IkControlCapabilityTypes::SET_TARGET] = true;
+    implemented_for_trees[IkControlCapabilityTypes::IK_CHECK] = false;
+    implemented_for_trees[IkControlCapabilityTypes::PLAN] = true;
+    implemented_for_trees[IkControlCapabilityTypes::MOVE] = true;
+    implemented_for_trees[IkControlCapabilityTypes::GRASP] = false;
 
   }
 
   ~DavinciIKControlCapability()
   {};
 
-  std::map <IKControlCapabilities, std::string> name;
-  std::map <std::string, IKControlCapabilities> from_name;
-  std::map <IKControlCapabilities, std::string> msg;
+  std::map <IkControlCapabilities, std::string> name;
+  std::map <std::string, IkControlCapabilities> from_name;
+  std::map <IkControlCapabilities, std::string> msg;
 
-  std::map <IKControlCapabilities, IKControlCapabilityTypes> type;
-  std::map<IKControlCapabilityTypes, bool> implemented_for_trees;
+  std::map <IkControlCapabilities, IkControlCapabilityTypes> type;
+  std::map<IkControlCapabilityTypes, bool> implemented_for_trees;
 };
 
 

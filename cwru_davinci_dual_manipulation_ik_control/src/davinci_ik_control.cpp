@@ -33,28 +33,37 @@
  *********************************************************************/
 
 /* Author: Su Lu <sxl924@case.edu>
- * Description: A class to manage a single object in an atomic manner,
- * making sure that it gets assigned a desired value (when this object goes out of scope,
- * it makes the assignment using the appropriate LOCK-able variable)
+ * Description: This is a class that is used from the ros_server to
+ * perform a desired ik using a dedicated thread (one for each end effector).
  */
 
+#include "davinci_ik_control.h"
+#include <cwru_davinci_dual_manipulation_shared/parsing_utils.h>
+#include <cwru_davinci_dual_manipulation_shared/ik_response.h>
+#include <ros/console.h>
 
-#include <dual_manipulation_shared/ik_service.h>
-#include <dual_manipulation_shared/scene_object_service.h>
-#include "ik_check_capability/ik_check_capability.h"
-#include <thread>
-#include <XmlRpcValue.h>
-#include <mutex>
-#include <std_msgs/String.h>
+#define CLASS_NAMESPACE "ikControl::"
+#define CLASS_LOGNAME "ikControl"
+#define DEBUG 0
+#define LOG_INFO 0 // decide whether to log at info or warning level
 
-// capabilities definition
-#include <dual_manipulation_shared/ik_control_capabilities.h>
-#include <cwru_davinci_dual_manipulation_ik_control/random_planning_capability.h>
-#include <cwru_davinci_dual_manipulation_ik_control/trajectory_execution_capability.h>
-#include <cwru_davinci_dual_manipulation_ik_control/grasping_capability.h>
+#define DEBUG_STRING {std::cout << CLASS_NAMESPACE << __func__ << "@" << __LINE__ << std::endl;}
+
+using namespace cwru_davinci_dual_manipulation::cwru_davinci_ik_control;
+
+DavinciIkControl::DavinciIkControl()
+{
+  #if !LOG_INFO
+}
 
 
-#ifndef CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_IK_CONTROL_H
-#define CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_IK_CONTROL_H
+bool DavinciIkControl::performIk(cwru_davinci_dual_manipulation_shared::ik_service::Request &req)
+{
 
-#endif //CWRU_DAVINCI_DUAL_MANIPULATION_IK_CONTROL_DAVINCI_IK_CONTROL_H
+}
+
+bool DavinciIkControl::manageObject(cwru_davinci_dual_manipulation_shared::scene_object_service::Request &req)
+{
+
+}
+

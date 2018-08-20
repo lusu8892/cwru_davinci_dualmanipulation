@@ -87,7 +87,9 @@ class DavinciIkControl
 {
 public:
   DavinciIkControl();
-  ~DavinciIkControl(){};
+
+  ~DavinciIkControl()
+  {};
 
   /**
    * interface function to perform the @e ik_service
@@ -108,11 +110,11 @@ private:
 
   // ros variables
   ros::NodeHandle node_;
-  std::map<ik_control_capabilities,ros::Publisher> hand_pub_;
+  std::map<ik_control_capabilities, ros::Publisher> hand_pub_;
 
   // utility variables
   std::vector<std::unique_ptr<std::thread>> used_threads_;
-  std::map<ik_control_capability_types,std::map<std::string,bool>> busy;
+  std::map<ik_control_capability_types, std::map<std::string, bool>> busy;
   const ik_control_capability capabilities_;
   std::mutex map_mutex_; // busy
   std::mutex ikCheck_mutex_;
@@ -120,6 +122,136 @@ private:
   std::string robot_description_;
   std::string full_robot_group_;
 
+  // managing external parameters
+  XmlRpc::XmlRpcValue ik_control_params_;
+
+  double hand_max_velocity_;   // maximum hand velocity : avg is 2.0, closes completely [0.0->1.0] in half a second
+  double epsilon_;            // IK tolerance used by KDLKinematicsPlugin
+
+  // shared parameters between capabilities
+  std::unique_ptr<shared_ik_memory> sikm_;
+  // capabilities
+  std::unique_ptr<DavinciRandomPlanningCapability> rndmPlan_;
+  std::unique_ptr<DavinciGroupStructureManager> trajExecute_;
+  std::unique_ptr<DavinciGraspingCapability> graspPlanExecute_;
+
+  /**
+   * @brief utility function to parse parameters from the parameter server
+   *
+   * @param params
+   *   all useful params got from the parameter server
+   * @return void
+   */
+  void parseParameters(XmlRpc::XmlRpcValue &params);
+
+  /**
+   * @brief utility function to set all class parameters to their default value
+   *
+   * @return void
+   */
+  void setDefaultParameters();
+
+  /**
+   * @brief utility function to set class variables which depend on parameters
+   *
+   * @return void
+   */
+  void setParameterDependentVariables();
+
+  /**
+   * @brief this is the thread body to perform IK feasibility check (no collision considered)
+   *
+   * @param req
+   *   the same req from the @e ik_service
+   * @return void
+   */
+  void ikCheckThread(cwru_davinci_dual_manipulation_shared::ik_service::Request req);
+
+  /**
+   * @brief this is the thread body to perform trajectory generation
+   *
+   * @param req
+   *   the same req from the @e ik_service
+   *
+   * @return void
+   */
+  void planningThread(cwru_davinci_dual_manipulation_shared::ik_service::Request req);
+
+  /**
+   * @brief execute last planned path
+   *
+   * @return void
+   */
+  void executePlan(cwru_davinci_dual_manipulation_shared::ik_service::Request req);
+
+
+  /**
+   * @brief function to move a group to its home position and to open the hand
+   *
+   * @param ee_name
+   *   which end-effector bring back home
+   * @return void
+   */
+  void simpleHoming(cwru_davinci_dual_manipulation_shared::ik_service::Request req);
+
+  /**
+   * @brief handler function for grasping an object
+   *
+   * @param req
+   *   the same req from the @e ik_service
+   * @return void
+   */
+  void grasp(cwru_davinci_dual_manipulation_shared::ik_service::Request req);
+
+  /**
+   * @brief handler function for ungrasping an object
+   *
+   * @param req
+   *   the same req from the @e ik_service
+   * @return void
+   */
+  void ungrasp(cwru_davinci_dual_manipulation_shared::ik_service::Request req);
+
+  /**
+   * @brief clear all current busy flags
+   *
+   */
+  inline void free_all()
+  {
+    map_mutex_.lock();
+    for (auto &item:busy)
+      for (auto &item2:item.second)
+        item2.second = false;
+    map_mutex_.unlock();
+    reset();
+  }
+
+  /**
+   * @brief resets all robot states and movePlans
+   */
+  void reset();
+
+  /**
+   * @brief function to check whether a capability is busy, and to lock it in case it is
+   *
+   * @param ee_name
+   *    end-effector name
+   * @param capability
+   *    capability to check
+   */
+  bool isFreeMakeBusy(std::string ee_name, std::string capability);
+
+  /**
+   * @brief add a target to the internal targets list
+   *
+   * @param req the same req from the @e ik_service
+   */
+  void addTarget(const dual_manipulation_shared::ik_service::Request &req);
+
+  /**
+   * @brief create instances of the various capabilities which will be used inside ik_control
+   */
+  void instantiateCapabilities();
 };
 
 }

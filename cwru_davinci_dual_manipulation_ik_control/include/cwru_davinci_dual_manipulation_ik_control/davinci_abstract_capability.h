@@ -55,7 +55,7 @@ public:
   virtual bool getResults(dual_manipulation_shared::ik_response& res) = 0;
   virtual bool canRun() = 0;
   /// could be associated with a type coming from ik_control_capabilities.h
-  virtual bool canPerformCapability(const IKControlCapabilities& ik_capability) const = 0;
+  virtual bool canPerformCapability(const IkControlCapabilities& ik_capability) const = 0;
   virtual void reset(){}
 };
 

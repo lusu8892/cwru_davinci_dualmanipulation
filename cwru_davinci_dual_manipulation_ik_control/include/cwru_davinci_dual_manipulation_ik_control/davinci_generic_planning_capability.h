@@ -47,34 +47,34 @@ namespace cwru_davinci_dual_manipulation
 namespace cwru_davinci_ik_control
 {
 
-enum class IKTargetType
+enum class IkTargetType
 {
   POSE_TARGET,
   JOINT_TARGET,
   NAMED_TARGET
 };
 
-struct IKTarget
+struct IkTarget
 {
-  IKTarget(){};
-  IKTarget(std::vector<geometry_msgs::Pose> ee_poses, std::string ee_name)
-    :ee_poses(ee_poses),ee_name(ee_name),type(IKTargetType::POSE_TARGET)
+  IkTarget(){};
+  IkTarget(std::vector<geometry_msgs::Pose> ee_poses, std::string ee_name)
+    :ee_poses(ee_poses),ee_name(ee_name),type(IkTargetType::POSE_TARGET)
   {};
 
-  IKTarget(geometry_msgs::Pose ee_pose,std::string ee_name)
-    :ee_poses({ee_pose}),ee_name(ee_name),type(IKTargetType::POSE_TARGET)
+  IkTarget(geometry_msgs::Pose ee_pose,std::string ee_name)
+    :ee_poses({ee_pose}),ee_name(ee_name),type(IkTargetType::POSE_TARGET)
   {};
 
-  IKTarget(std::string target_name,std::string ee_name)
-    :target_name(target_name),ee_name(ee_name),type(IKTargetType::NAMED_TARGET)
+  IkTarget(std::string target_name,std::string ee_name)
+    :target_name(target_name),ee_name(ee_name),type(IkTargetType::NAMED_TARGET)
   {};
 
-  IKTarget(std::vector<std::vector<double>> joints,std::string ee_name)
-    :joints(joints),ee_name(ee_name),type(IKTargetType::JOINT_TARGET)
+  IkTarget(std::vector<std::vector<double>> joints,std::string ee_name)
+    :joints(joints),ee_name(ee_name),type(IkTargetType::JOINT_TARGET)
   {};
 
-  IKTarget(std::vector<double> joint,std::string ee_name):
-    joints({joint}),ee_name(ee_name),type(IKTargetType::JOINT_TARGET)
+  IkTarget(std::vector<double> joint,std::string ee_name):
+    joints({joint}),ee_name(ee_name),type(IkTargetType::JOINT_TARGET)
   {};
 
 
@@ -82,7 +82,7 @@ struct IKTarget
   std::string ee_name;
   std::vector<std::vector<double>> joints;
   std::string target_name;
-  IKTargetType type;
+  IkTargetType type;
 };
 
 class DavinciGenericPlanningCapability : public DavinciAbstractCapability
