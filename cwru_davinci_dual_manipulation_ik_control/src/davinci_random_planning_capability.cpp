@@ -574,7 +574,7 @@ bool DavinciRandomPlanningCapability::buildMotionPlanRequest(moveit_msgs::Motion
     pc.constraint_region.primitives.clear();
     pc.constraint_region.primitives.push_back(box);
 
-    // the orientation of the goal constrait is already [0 0 0 1]
+    // the orientation of the goal constraint is already [0 0 0 1]
     if (plan_type == IkControlCapabilities::PLAN_NO_COLLISION)
       pc.constraint_region.primitive_poses.at(0).position.z += TABLE_WP_HEIGHT;
 
@@ -589,6 +589,85 @@ bool DavinciRandomPlanningCapability::buildMotionPlanRequest(moveit_msgs::Motion
   }
 
   return true;
+}
+
+void DavinciRandomPlanningCapability::addTarget(const cwru_davinci_dual_manipulation_shared::ik_service::Request& req)
+{
+  std::unique_lock<std::mutex> ul(map_mutex_);
+  IkControlCapabilities local_capability = capability_.from_name.at(req.command);
+
+  // if it's a tree, clear all previously set targets for its chains
+  if(sikm_.groupManager->isTree (req.ee_name))
+  {
+    for(auto chain:sikm_.groupManager->getTreeComposition (req.ee_name))
+      targets_.erase(chain);
+  }
+  // else, if it's a chain, split any previously set target for the whole tree into chain targets
+  else
+  {
+    for(auto& tree:sikm_.groupManager->getTreeWithChain (req.ee_name))
+    {
+      if (targets_.count(tree) == 0)
+        continue;
+
+      if(targets_[tree].type == IkTargetType::POSE_TARGET)
+      {
+        int i= 0;
+        for(auto& chain:sikm_.groupManager -> getTreeComposition (tree))
+          targets_[chain] = IkTarget(targets_[tree].ee_poses.at(i++), chain);
+        targets_.erase(tree);
+      }
+      else if(targets_[tree].type == IkTargetType::JOINT_TARGET)
+      {
+        int i = 0;
+        for(auto& chain:sikm_.groupManager -> getTreeComposition (tree))
+          targets_[chain] = IkTarget(targets_[tree].joints.at(i++), chain);
+        targets_.erase(tree);
+      }
+      else if(targets_[tree].type == IkTargetType::NAMED_TARGET)
+      {
+        std::string suffix = targets_[tree].target_name;
+        //NOTE: this hp is that each target is named with the same suffix for each chain/tree, starting with the chain/tree name
+        // in, e.g., myTree_home, myChain1_home, myChain2_home, ...
+        suffix = suffix.substr(tree.size(),suffix.size());
+        for(auto& chain:sikm_.groupManager->getTreeComposition (tree))
+          targets_[chain] = IkTarget                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            (chain + suffix,chain);
+        targets_.erase(tree);
+      }
+      else
+        ROS_ERROR_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : Unknown ik_target_type!!!");
+    }
+  }
+
+  if(local_capability == IkControlCapabilities::SET_TARGET)
+  {
+    targets_[req.ee_name] = IkTarget(req.ee_pose, req.ee_name);
+  }
+  else if (local_capability == IkControlCapabilities::SET_HOME_TARGET)
+  {
+    std::string group_name;
+    bool exists = sikm_.groupManager->getGroupInSRDF (req.ee_name, group_name);
+    assert (exists);
+    targets_[req.ee_name] = IkTarget(group_name + "_home", req.ee_name);
+  }
+  else
+    ROS_ERROR_STREAM_NAMED(CLASS_LOGNAME,
+                           CLASS_NAMESPACE << __func__ << " : requested set-target command \'" << req.command
+                                           << "\' is not implemented!");
+}
+
+bool DavinciRandomPlanningCapability::setTarget(std::string ee_name, std::string named_target)
+{
+  std::string group_name;
+  bool exists = sikm_.groupManager->getGroupInSRDF(ee_name,group_name);
+  assert(exists);
+
+  const moveit::core::JointModelGroup* jmg = robot_model_->getJointModelGroup(group_name);
+
+  std::unique_lock<std::mutex> ul(robotState_mutex_);
+  bool set_ok = target_rs_->setToDefaultValues(jmg,named_target);
+
+  return set_ok;
 }
 
 

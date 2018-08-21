@@ -69,7 +69,7 @@ public:
    *
    * @param req the same req from the @e ik_service
    */
-  void add_target(const cwru_davinci_dual_manipulation_shared::ik_service::Request& req);
+  void addTarget(const cwru_davinci_dual_manipulation_shared::ik_service::Request& req);
 
 private:
   DavinciSharedIKMemory& sikm_;
