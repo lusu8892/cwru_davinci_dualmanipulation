@@ -476,27 +476,119 @@ bool DavinciRandomPlanningCapability::buildMotionPlanRequest(moveit_msgs::Motion
 
   for (auto target_it:targets)
   {
-    IkTarget& target(target_it.second);
+    IkTarget &target(target_it.second);
     moveit_msgs::Constraints c_tmp;
 
     std::string group_name;
     bool exists = sikm_.groupManager->getGroupInSRDF(target.ee_name, group_name);
 
     assert(exists);
-    const moveit::core::JointModelGroup* jmg = robot_model_->getJointModelGroup(group_name);
+    const moveit::core::JointModelGroup *jmg = robot_model_->getJointModelGroup(group_name);
 
-    if(target.type == IkTargetType::NAMED_TARGET)
+    if (target.type == IkTargetType::NAMED_TARGET)
     {
       setTarget(target.ee_name, target.target_name);
 
       std::unique_lock<std::mutex> ul(robotState_mutex_);
-      c_tmp = kinematic_constraints::constructGoalConstraints(*target_rs_,jmg,joint_tol);
+      c_tmp = kinematic_constraints::constructGoalConstraints(*target_rs_, jmg, joint_tol);
     }
-    
+    else if (target.type == IkTargetType::POSE_TARGET)
+    {
+      moveit_msgs::Constraints c_tmp2;
 
+      std::vector<std::string> tips;
+      if (jmg->isEndEffector())
+        tips.emplace_back(jmg->getEndEffectorParentGroup().second);
+      else
+        jmg->getEndEffectorTips(tips);
 
+      // let's make sure we're getting the right coupling...
+      assert(tips.size() == target.ee_poses.size());
+      // go through the poses...
+      for (int i = 0; i < target.ee_poses.size(); i++)
+      {
+        geometry_msgs::PoseStamped pose;
+        geometry_msgs::Pose normalized_pose = target.ee_poses.at(i);
+        double norm = std::sqrt(normalized_pose.orientation.x * normalized_pose.orientation.x +
+                                normalized_pose.orientation.y * normalized_pose.orientation.y +
+                                normalized_pose.orientation.z * normalized_pose.orientation.z +
+                                normalized_pose.orientation.w * normalized_pose.orientation.w);
 
+        normalized_pose.orientation.x = normalized_pose.orientation.x / norm;
+        normalized_pose.orientation.y = normalized_pose.orientation.y / norm;
+        normalized_pose.orientation.z = normalized_pose.orientation.z / norm;
+        normalized_pose.orientation.w = normalized_pose.orientation.w / norm;
+
+        if (norm < 0.99 || norm > 1.01)
+          ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,
+                                CLASS_NAMESPACE << __func__ << " : Setting target pose (Q norm = " << norm << ") : "
+                                                << target.ee_poses.at(i) << "normalized became: " << normalized_pose);
+        pose.header.frame_id = robot_model_->getRootLinkName();
+        pose.pose = normalized_pose;
+        c_tmp2 = kinematic_constraints::constructGoalConstraints(tips.at(i), pose, pos_tol, orient_tol);
+        // }
+        c_tmp = kinematic_constraints::mergeConstraints(c_tmp, c_tmp2);
+      }
+    }
+    else // if(target.type == ik_target_type::JOINT_TARGET)
+    {
+      ROS_ERROR_STREAM_NAMED(CLASS_LOGNAME,
+                             CLASS_NAMESPACE << __func__ << " : the requested target type is NOT implemented yet!!!");
+      return false;
+    }
+    c = kinematic_constraints::mergeConstraints(c, c_tmp);
+
+    // merge everything into the request
+    if (MotionPlanReq_.goal_constraints.empty())
+      MotionPlanReq_.goal_constraints.push_back(c);
+    else
+      MotionPlanReq_.goal_constraints.at(0) = kinematic_constraints::mergeConstraints(
+        MotionPlanReq_.goal_constraints.at(0), c);
+
+    if (MotionPlanReq_.goal_constraints.size() > 1)
+      ROS_WARN_STREAM_NAMED(CLASS_LOGNAME, CLASS_NAMESPACE << __func__
+                                                           << " : multiple goals are set, but current implementation of "
+                                                             "this software only considers first! Ignoring the others...");
+
+    if (is_close)
+    {
+#if DEBUG > 1
+      ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : planning to a close configuration >
+      implement-me better! I am assuming there is only ONE POSE TARGET here, AND that table waypoints are " <<
+       TABLE_WP_HEIGHT*100 << "cm high!");
+      std::cout << c << std::endl;
+#endif
+    }
+
+    moveit_msgs::PositionConstraint pc;
+    shape_msgs::SolidPrimitive box;
+    box.type = shape_msgs::SolidPrimitive::BOX;
+    box.dimensions.push_back(1.5); // BOX_X
+    box.dimensions.push_back(1.5); // BOX_Y
+    // compute BOX_Z such that it doubles the distance from the initial point
+    // TODO: compute this!!! at now assuming table waypoints are always 10cm high!
+    // allow for more space to plan within
+    box.dimensions.push_back(10.0*TABLE_WP_HEIGHT); // was (2.1*TABLE_WP_HEIGHT);
+
+    pc = c.position_constraints.at(0);
+    pc.constraint_region.primitives.clear();
+    pc.constraint_region.primitives.push_back(box);
+
+    // the orientation of the goal constrait is already [0 0 0 1]
+    if (plan_type == IkControlCapabilities::PLAN_NO_COLLISION)
+      pc.constraint_region.primitive_poses.at(0).position.z += TABLE_WP_HEIGHT;
+
+    req.path_constraints.name = "my_box_constraint";
+    req.path_constraints.position_constraints.clear();
+    req.path_constraints.position_constraints.push_back(pc);
+
+#if DEBUG > 1
+    ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : planning to a close configuration > implement-me better! I am assuming there is only ONE POSE TARGET here!");
+        std::cout << "Path constraint:\n" << req.path_constraints.position_constraints.at(0) << std::endl;
+#endif
   }
+
+  return true;
 }
 
 
